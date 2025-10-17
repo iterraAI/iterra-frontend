@@ -127,11 +127,11 @@ export default function Contribute() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 flex items-center space-x-2">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
           <GitFork className="text-green-600" />
           <span>Contribute to Open Source</span>
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="text-gray-600 dark:text-gray-300 mt-2">
           Solve issues from any public GitHub repository with AI assistance
         </p>
       </div>
@@ -139,11 +139,11 @@ export default function Contribute() {
       {/* Input Card */}
       {step === 'input' && (
         <div className="card max-w-3xl mx-auto">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Import a GitHub Issue</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Import a GitHub Issue</h2>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Paste GitHub Issue URL
               </label>
               <input
@@ -151,10 +151,11 @@ export default function Contribute() {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://github.com/facebook/react/issues/12345"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-[var(--border-primary)] rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent  text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                // className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 disabled={parseMutation.isPending}
               />
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                 Example: https://github.com/facebook/react/issues/12345
               </p>
             </div>
@@ -179,12 +180,12 @@ export default function Contribute() {
           </form>
 
           {/* Info Section */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-semibold text-blue-900 mb-2 flex items-center space-x-2">
+          <div className="mt-6 p-4">
+            <h3 className="font-semibold text-blue-900 dark:text-gray-100 mb-2 flex items-center space-x-2">
               <AlertCircle size={18} />
               <span>How it works</span>
             </h3>
-            <ol className="text-sm text-blue-800 space-y-1 ml-6 list-decimal">
+            <ol className="text-sm text-blue-800 dark:text-gray-300 space-y-1 ml-6 list-decimal">
               <li>Paste a GitHub issue URL</li>
               <li>We'll fetch the issue details and create a fork if needed</li>
               <li>Our AI will analyze and solve the issue</li>
@@ -200,8 +201,8 @@ export default function Contribute() {
         <div className="card max-w-4xl mx-auto">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center space-x-2">
-              <CheckCircle2 className="text-green-600" size={24} />
-              <h2 className="text-xl font-bold text-gray-900">Issue Preview</h2>
+              <CheckCircle2 className="text-green-600 dark:text-emerald-400" size={24} />
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Issue Preview</h2>
             </div>
             <button
               onClick={() => {
@@ -209,20 +210,20 @@ export default function Contribute() {
                 setParsed(null)
                 setIssuePreview(null)
               }}
-              className="text-sm text-gray-600 hover:text-gray-800"
+              className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white"
             >
               ← Back
             </button>
           </div>
 
           {/* Repository Info */}
-          <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+          <div className="mb-4 p-3 bg-gray-50 dark:bg-[var(--card-bg)] rounded-lg border dark:border-[var(--border-primary)]">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Repository</p>
-                <p className="font-semibold text-lg text-gray-900">{issuePreview.repository.fullName}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Repository</p>
+                <p className="font-semibold text-lg text-gray-900 dark:text-gray-100">{issuePreview.repository.fullName}</p>
                 {issuePreview.repository.language && (
-                  <span className="inline-block mt-1 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">
+                  <span className="inline-block mt-1 px-2 py-0.5 bg-blue-100 dark:bg-[rgba(16,185,129,0.12)] text-blue-700 dark:text-emerald-400 text-xs rounded">
                     {issuePreview.repository.language}
                   </span>
                 )}
@@ -231,7 +232,7 @@ export default function Contribute() {
                 href={issuePreview.repository.htmlUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-green-600 hover:underline flex items-center space-x-1"
+                className="text-green-600 dark:text-emerald-400 hover:underline flex items-center space-x-1"
               >
                 <span>View on GitHub</span>
                 <ExternalLink size={14} />
@@ -240,12 +241,12 @@ export default function Contribute() {
           </div>
 
           {/* Issue Details */}
-          <div className="border border-gray-200 rounded-lg p-4">
+          <div className="border border-gray-200 dark:border-[var(--border-primary)] rounded-lg p-4">
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-2">
-                  <h3 className="text-xl font-bold text-gray-900">{issuePreview.issue.title}</h3>
-                  <span className="text-gray-500 text-sm">#{issuePreview.issue.number}</span>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{issuePreview.issue.title}</h3>
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">#{issuePreview.issue.number}</span>
                 </div>
                 
                 {issuePreview.issue.labels.length > 0 && (
@@ -253,7 +254,7 @@ export default function Contribute() {
                     {issuePreview.issue.labels.map((label: string) => (
                       <span
                         key={label}
-                        className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded"
+                        className="px-2 py-0.5 bg-gray-100 dark:bg-[#1e1f23] text-gray-700 dark:text-gray-300 text-xs rounded"
                       >
                         {label}
                       </span>
@@ -264,19 +265,19 @@ export default function Contribute() {
             </div>
 
             <div className="prose max-w-none">
-              <p className="text-gray-700 whitespace-pre-wrap">
+              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                 {issuePreview.issue.body || 'No description provided'}
               </p>
             </div>
           </div>
 
           {/* Fork Notice */}
-          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="mt-4 p-4 bg-yellow-50 dark:bg-[#1f1a0a] border border-yellow-200 dark:border-[var(--border-primary)] rounded-lg">
             <div className="flex items-start space-x-3">
               <GitFork className="text-yellow-600 flex-shrink-0 mt-0.5" size={20} />
               <div className="flex-1">
-                <h4 className="font-semibold text-yellow-900 mb-1">Fork Required</h4>
-                <p className="text-sm text-yellow-800">
+                <h4 className="font-semibold text-yellow-900 dark:text-gray-100 mb-1">Fork Required</h4>
+                <p className="text-sm text-yellow-800 dark:text-gray-300">
                   {issuePreview.alreadyImported
                     ? 'This issue is already imported. You can continue solving it.'
                     : 'This repository will be forked to your GitHub account. You\'ll create a PR from your fork to the original repository.'}

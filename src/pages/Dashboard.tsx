@@ -50,8 +50,8 @@ export default function Dashboard() {
       <div className="flex flex-col items-center justify-center py-16 space-y-4">
         <div className="text-center">
           <AlertCircle className="mx-auto text-red-500 mb-4" size={48} />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Failed to load dashboard</h2>
-          <p className="text-gray-600 mb-4">There was an error loading your data. Please try refreshing the page.</p>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Failed to load dashboard</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">There was an error loading your data. Please try refreshing the page.</p>
           <button 
             onClick={() => window.location.reload()} 
             className="btn btn-primary"
@@ -102,8 +102,8 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 text-lg">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
+        <p className="text-gray-600 dark:text-gray-300 text-lg">
           Welcome back! Here's your bug resolution overview.
         </p>
       </div>
@@ -116,16 +116,16 @@ export default function Dashboard() {
             <Link 
               key={stat.name} 
               to={stat.link} 
-              className="card group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-green-100"
+              className="card group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-green-100 dark:hover:border-[var(--border-secondary)]"
             >
               <div className="flex items-start justify-between mb-3">
-                <div className={`p-3 rounded-xl ${stat.bgColor} group-hover:scale-110 transition-transform duration-300`}>
-                  <Icon className={stat.color} size={24} />
+                <div className={`p-3 rounded-xl ${stat.bgColor} dark:bg-[rgba(16,185,129,0.12)] group-hover:scale-110 transition-transform duration-300`}>
+                  <Icon className={`${stat.color}`} size={24} />
                 </div>
               </div>
-              <p className="text-gray-600 text-sm font-medium mb-1">{stat.name}</p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm font-medium mb-1">{stat.name}</p>
               <p className={`text-4xl font-bold ${stat.color} group-hover:scale-105 transition-transform duration-300`}>{stat.value}</p>
-              <div className="mt-3 flex items-center text-sm text-gray-500 group-hover:text-green-600 transition-colors">
+              <div className="mt-3 flex items-center text-sm text-gray-500 dark:text-gray-400 group-hover:text-green-600 transition-colors">
                 <span>View details</span>
                 <ArrowRight size={14} className="ml-1 group-hover:translate-x-2 transition-transform duration-300" />
               </div>
@@ -138,7 +138,7 @@ export default function Dashboard() {
       <div className="grid md:grid-cols-2 gap-6">
         {/* Quick Actions */}
         <div className="card hover:shadow-xl transition-shadow duration-300">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
             <Zap className="mr-2 text-green-600" size={24} />
             Quick Actions
           </h2>
@@ -165,19 +165,19 @@ export default function Dashboard() {
 
         {/* Recent Activity */}
         <div className="card hover:shadow-xl transition-shadow duration-300">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Recent Activity</h2>
           <div className="space-y-3">
             {(issues && Array.isArray(issues) ? issues.slice(0, 4) : []).map((issue: any) => (
               <Link 
                 key={issue._id} 
                 to={`/issues/${issue._id}/solve`}
-                className="flex items-center justify-between py-3 px-4 rounded-xl bg-gray-50 hover:bg-white transition-all border border-gray-200 hover:border-green-300 hover:shadow-md hover:-translate-y-0.5 group duration-200"
+                className="flex items-center justify-between py-3 px-4 rounded-xl bg-gray-50 dark:bg-[var(--card-bg)] hover:bg-white dark:hover:bg-[#141519] transition-all border border-gray-200 dark:border-[var(--border-primary)] hover:border-green-300 dark:hover:border-[var(--border-secondary)] hover:shadow-md hover:-translate-y-0.5 group duration-200"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="font-semibold text-sm text-gray-900 truncate group-hover:text-green-600 transition-colors">
+                  <p className="font-semibold text-sm text-gray-900 dark:text-gray-100 truncate group-hover:text-green-600 transition-colors">
                     {issue.title}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">#{issue.issueNumber} • {issue.repoFullName}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">#{issue.issueNumber} • {issue.repoFullName}</p>
                 </div>
                 <span className={`ml-3 px-3 py-1 text-xs font-semibold rounded-lg whitespace-nowrap ${
                   issue.status === 'pr_created' ? 'bg-green-100 text-green-700 border border-green-200' :
@@ -194,8 +194,8 @@ export default function Dashboard() {
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <AlertCircle className="text-gray-400" size={32} />
                 </div>
-                <p className="text-gray-600 font-medium mb-2">No issues yet</p>
-                <p className="text-gray-500 text-sm mb-4">Start by syncing your repositories or contributing to open source</p>
+                <p className="text-gray-600 dark:text-gray-300 font-medium mb-2">No issues yet</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Start by syncing your repositories or contributing to open source</p>
                 <Link to="/repositories" className="btn btn-primary text-sm">
                   Sync Repositories
                 </Link>
@@ -207,11 +207,11 @@ export default function Dashboard() {
 
       {/* Getting Started Card (if no issues) */}
       {(!issues || issues.length === 0) && (
-        <div className="card bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
+        <div className="card bg-gradient-to-br from-green-50 to-blue-50 dark:from-[rgba(16,185,129,0.06)] dark:to-[rgba(16,185,129,0.12)] border-green-200 dark:border-[var(--border-primary)]">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
             <div className="flex-1">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">🎉 Welcome to Bug Resolve!</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">🎉 Welcome to Bug Resolve!</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Get started by syncing your GitHub repositories or contribute to popular open-source projects.
               </p>
               <div className="flex flex-wrap gap-3">

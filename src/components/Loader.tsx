@@ -15,7 +15,7 @@ export default function Loader({ variant = 'inline', text, className = '' }: Loa
           {/* Animated icon with gradient background */}
           <div className="relative mx-auto w-20 h-20">
             {/* Outer spinning ring */}
-            <div className="absolute inset-0 rounded-full border-4 border-green-200 dark:border-green-900/30"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-green-200"></div>
             <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-green-600 animate-spin"></div>
             
             {/* Inner icon */}
@@ -28,7 +28,7 @@ export default function Loader({ variant = 'inline', text, className = '' }: Loa
 
           {/* Loading text */}
           <div className="space-y-2">
-            <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+            <p className="text-lg font-semibold text-gray-800">
               {text || 'Loading...'}
             </p>
             <div className="flex items-center justify-center space-x-1">
@@ -47,7 +47,7 @@ export default function Loader({ variant = 'inline', text, className = '' }: Loa
     return (
       <div className={`inline-flex items-center space-x-2 ${className}`}>
         <Loader2 className="animate-spin text-green-600" size={16} />
-        {text && <span className="text-sm text-gray-600 dark:text-gray-400">{text}</span>}
+        {text && <span className="text-sm text-gray-600">{text}</span>}
       </div>
     )
   }
@@ -58,7 +58,7 @@ export default function Loader({ variant = 'inline', text, className = '' }: Loa
       {/* Spinner with gradient */}
       <div className="relative w-16 h-16">
         {/* Outer ring */}
-        <div className="absolute inset-0 rounded-full border-4 border-green-100 dark:border-green-900/30"></div>
+        <div className="absolute inset-0 rounded-full border-4 border-green-100"></div>
         
         {/* Spinning gradient ring */}
         <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-green-600 border-r-green-500 animate-spin"></div>
@@ -71,7 +71,7 @@ export default function Loader({ variant = 'inline', text, className = '' }: Loa
 
       {/* Text */}
       {text && (
-        <p className="text-base font-medium text-gray-800 dark:text-gray-200 animate-pulse">
+        <p className="text-base font-medium text-gray-800 animate-pulse">
           {text}
         </p>
       )}
@@ -85,15 +85,15 @@ export function CardSkeleton() {
     <div className="card animate-pulse">
       <div className="space-y-3">
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+          <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
           <div className="flex-1 space-y-2">
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
           </div>
         </div>
         <div className="space-y-2">
-          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
-          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+          <div className="h-3 bg-gray-200 rounded"></div>
+          <div className="h-3 bg-gray-200 rounded w-5/6"></div>
         </div>
       </div>
     </div>
@@ -107,9 +107,9 @@ export function StatsSkeleton() {
       {[...Array(4)].map((_, i) => (
         <div key={i} className="card animate-pulse">
           <div className="space-y-3">
-            <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
-            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
-            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+            <div className="w-12 h-12 bg-gray-200 rounded-xl"></div>
+            <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-8 bg-gray-200 rounded w-1/2"></div>
           </div>
         </div>
       ))}

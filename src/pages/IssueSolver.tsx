@@ -75,8 +75,8 @@ export default function IssueSolver() {
   return (
     <div className="space-y-6 max-w-6xl">
       <div>
-        <h1 className="text-3xl font-bold text-white">Solve Issue with AI</h1>
-        <p className="text-white/80 mt-2">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Solve Issue with AI</h1>
+        <p className="text-gray-600 dark:text-gray-300 mt-2">
           Use AI to analyze and generate a solution for this issue
         </p>
       </div>
@@ -84,17 +84,17 @@ export default function IssueSolver() {
       {/* Issue Details */}
       <div className="card">
         <div className="flex items-start space-x-4">
-          <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 bg-orange-100 dark:bg-[#2a1e12] rounded-lg flex items-center justify-center flex-shrink-0">
             <AlertCircle className="text-orange-600" size={24} />
           </div>
           <div className="flex-1">
             <div className="flex items-center space-x-2 mb-2">
-              <h2 className="text-2xl font-bold">{issueData?.title}</h2>
-              <span className="text-gray-500">#{issueData?.issueNumber}</span>
+              <h2 className="text-2xl font-bold dark:text-gray-100">{issueData?.title}</h2>
+              <span className="text-gray-500 dark:text-gray-400">#{issueData?.issueNumber}</span>
             </div>
-            <p className="text-gray-600 mb-4">{issueData?.repoFullName}</p>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-700 whitespace-pre-wrap">
+            <p className="text-gray-600 dark:text-gray-300 mb-4">{issueData?.repoFullName}</p>
+            <div className="bg-gray-50 dark:bg-[var(--card-bg)] border dark:border-[var(--border-primary)] p-4 rounded-lg">
+              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                 {issueData?.body || 'No description provided'}
               </p>
             </div>
@@ -103,7 +103,7 @@ export default function IssueSolver() {
                 {issueData.labels.map((label: string) => (
                   <span
                     key={label}
-                    className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded"
+                    className="px-3 py-1 bg-blue-100 dark:bg-[#1e1f23] text-blue-700 dark:text-gray-300 text-sm rounded"
                   >
                     {label}
                   </span>
@@ -116,8 +116,8 @@ export default function IssueSolver() {
 
       {/* Progress Tracker */}
       {generateMutation.isPending && (
-        <div className="card bg-gradient-to-br from-primary-50 to-white">
-          <h3 className="text-xl font-bold mb-2 text-center">🤖 AI is Working...</h3>
+        <div className="card bg-gradient-to-br from-primary-50 to-white dark:from-[rgba(16,185,129,0.06)] dark:to-[var(--card-bg)]">
+          <h3 className="text-xl font-bold mb-2 text-center dark:text-gray-100">🤖 AI is Working...</h3>
           <ProgressTracker currentStep={analysisStep} steps={AI_ANALYSIS_STEPS} />
         </div>
       )}
@@ -125,7 +125,7 @@ export default function IssueSolver() {
       {/* AI Model Selection */}
       {!solution && (
         <div className="card">
-          <h3 className="text-xl font-bold mb-4">Select AI Model</h3>
+          <h3 className="text-xl font-bold mb-4 dark:text-gray-100">Select AI Model</h3>
           <div className="grid md:grid-cols-2 gap-4">
             {modelsData?.models?.map((model: any) => (
               <div
@@ -133,8 +133,8 @@ export default function IssueSolver() {
                 onClick={() => setSelectedModel(model.id)}
                 className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   selectedModel === model.id
-                    ? 'border-primary-600 bg-primary-50'
-                    : 'border-gray-200 hover:border-primary-300'
+                    ? 'border-green-600 bg-green-50 dark:bg-[rgba(16,185,129,0.08)]'
+                    : 'border-gray-200 dark:border-[var(--border-primary)] hover:border-green-300'
                 }`}
               >
                 <div className="flex items-center space-x-3">
@@ -145,8 +145,8 @@ export default function IssueSolver() {
                     className="w-4 h-4"
                   />
                   <div>
-                    <p className="font-semibold">{model.name}</p>
-                    <p className="text-sm text-gray-600">{model.description}</p>
+                    <p className="font-semibold dark:text-gray-100">{model.name}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">{model.description}</p>
                   </div>
                 </div>
               </div>
@@ -179,17 +179,17 @@ export default function IssueSolver() {
           {/* Analysis */}
           <div className="card">
             <div className="flex items-center space-x-2 mb-4">
-              <Code className="text-primary-600" size={24} />
-              <h3 className="text-xl font-bold">AI Analysis</h3>
+              <Code className="text-green-600" size={24} />
+              <h3 className="text-xl font-bold dark:text-gray-100">AI Analysis</h3>
             </div>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-700 whitespace-pre-wrap">{solution.analysis}</p>
+            <div className="bg-gray-50 dark:bg-[var(--card-bg)] border dark:border-[var(--border-primary)] p-4 rounded-lg">
+              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{solution.analysis}</p>
             </div>
             <div className="mt-4 flex items-center justify-between">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
                 Confidence: {solution.confidence}%
               </span>
-              <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded">
+              <span className="px-3 py-1 bg-blue-100 dark:bg-[#1e1f23] text-blue-700 dark:text-gray-300 text-sm rounded">
                 {solution.aiModel}
               </span>
             </div>
@@ -197,9 +197,9 @@ export default function IssueSolver() {
 
           {/* Proposed Solution */}
           <div className="card">
-            <h3 className="text-xl font-bold mb-4">Proposed Solution</h3>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-700 whitespace-pre-wrap">{solution.proposedSolution}</p>
+            <h3 className="text-xl font-bold mb-4 dark:text-gray-100">Proposed Solution</h3>
+            <div className="bg-gray-50 dark:bg-[var(--card-bg)] border dark:border-[var(--border-primary)] p-4 rounded-lg">
+              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{solution.proposedSolution}</p>
             </div>
           </div>
 
@@ -208,9 +208,9 @@ export default function IssueSolver() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <FileCode className="text-green-600" size={24} />
-                <h3 className="text-xl font-bold">Files Changed</h3>
+                <h3 className="text-xl font-bold dark:text-gray-100">Files Changed</h3>
               </div>
-              <p className="text-sm text-gray-500">Red = Removed | Green = Added</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Red = Removed | Green = Added</p>
             </div>
             <div className="space-y-4">
               {solution.filesChanged?.map((file: any, index: number) => (
@@ -226,9 +226,9 @@ export default function IssueSolver() {
           </div>
 
           {/* Actions */}
-          <div className="card bg-primary-50 border-2 border-primary-200">
-            <h3 className="text-xl font-bold mb-4">Next Steps</h3>
-            <p className="text-gray-700 mb-4">
+          <div className="card bg-primary-50 dark:bg-[rgba(16,185,129,0.06)] border-2 border-primary-200 dark:border-[var(--border-primary)]">
+            <h3 className="text-xl font-bold mb-4 dark:text-gray-100">Next Steps</h3>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">
               Review the solution above. When ready, proceed to validation to approve or reject it.
             </p>
             <div className="flex space-x-4">

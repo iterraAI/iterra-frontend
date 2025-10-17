@@ -63,8 +63,8 @@ export default function Repositories() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Repositories</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Repositories</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">
             Manage your GitHub repositories and sync issues
           </p>
         </div>
@@ -82,28 +82,28 @@ export default function Repositories() {
           <div key={repo._id} className="card hover:shadow-xl transition-all">
             <div className="flex items-start justify-between">
               <div className="flex items-start space-x-4 flex-1">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <GitBranch className="text-green-600" size={24} />
+                <div className="w-12 h-12 bg-green-100 dark:bg-[rgba(16,185,129,0.12)] rounded-lg flex items-center justify-center flex-shrink-0">
+                  <GitBranch className="text-green-600 dark:text-emerald-400" size={24} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center space-x-2">
-                    <h3 className="font-bold text-lg text-gray-900 truncate">{repo.name}</h3>
+                    <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 truncate">{repo.name}</h3>
                     {repo.isPrivate && (
-                      <span className="px-2 py-0.5 bg-gray-200 text-gray-700 text-xs rounded">
+                      <span className="px-2 py-0.5 bg-gray-200 dark:bg-[#1e1f23] text-gray-700 dark:text-gray-300 text-xs rounded">
                         Private
                       </span>
                     )}
                   </div>
-                  <p className="text-gray-600 text-sm">{repo.fullName}</p>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">{repo.fullName}</p>
                   {repo.description && (
-                    <p className="text-gray-500 text-sm mt-2 line-clamp-2">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm mt-2 line-clamp-2">
                       {repo.description}
                     </p>
                   )}
                   <div className="flex items-center space-x-4 mt-3">
                     {repo.language && (
-                      <span className="text-xs text-gray-500">
-                        <span className="inline-block w-2 h-2 rounded-full bg-blue-500 mr-1"></span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="inline-block w-2 h-2 rounded-full bg-blue-500 dark:bg-emerald-400 mr-1"></span>
                         {repo.language}
                       </span>
                     )}
@@ -111,7 +111,7 @@ export default function Repositories() {
                       href={repo.htmlUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-green-600 hover:underline flex items-center space-x-1"
+                      className="text-xs text-green-600 dark:text-emerald-400 hover:underline flex items-center space-x-1"
                     >
                       <span>View on GitHub</span>
                       <ExternalLink size={12} />
@@ -146,8 +146,8 @@ export default function Repositories() {
       {data?.repositories?.length === 0 && (
         <div className="card text-center py-12">
           <GitBranch className="mx-auto text-gray-400" size={48} />
-          <h3 className="mt-4 text-lg font-medium text-gray-900">No repositories found</h3>
-          <p className="text-gray-500 mt-2">
+          <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">No repositories found</h3>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
             Click refresh to sync your GitHub repositories
           </p>
         </div>

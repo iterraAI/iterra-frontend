@@ -16,6 +16,7 @@ import {
   // TrendingUp
 } from 'lucide-react'
 import logo from '../assets/logo_new.png'
+import ThemeSwitcher from '../components/ThemeSwitcher'
 
 export default function LandingPage() {
   const { user, isLoading } = useAuthStore()
@@ -61,13 +62,13 @@ export default function LandingPage() {
 
               {/* Nav Links */}
               <div className="hidden md:flex items-center space-x-8">
-                <a href="#features" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+                <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
                   Features
                 </a>
-                <a href="#how-it-works" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+                <a href="#how-it-works" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
                   How It Works
                 </a>
-                <a href="#benefits" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+                <a href="#benefits" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
                   Benefits
                 </a>
               </div>
@@ -83,6 +84,7 @@ export default function LandingPage() {
                 Get Started
                 <ArrowRight size={18} />
               </Link>
+              <ThemeSwitcher />
             </div>
           </div>
         </div>
@@ -96,48 +98,66 @@ export default function LandingPage() {
         </div> */}
 
         <div className="absolute inset-0 z-0">
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `
-                radial-gradient(
-                  circle at 50% 40%,
-                  rgba(34, 197, 94, 0.25) 0%,
-                  rgba(255, 255, 255, 1) 70%
-                )
-              `
-            }}
-          ></div>
+          <div className="absolute inset-0">
+            <div className="hidden dark:block absolute inset-0" style={{
+              background: 'radial-gradient(800px circle at 50% 40%, rgba(16,185,129,0.15), transparent 40%)'
+            }} />
+            <div className="dark:hidden absolute inset-0" style={{
+              background: 'radial-gradient(circle at 50% 40%, rgba(34,197,94,0.25) 0%, #ffffff 70%)'
+            }} />
+          </div>
 
-          {/* bottom fade to white */}
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent"></div>
+          {/* bottom glowing arc (emerald theme) */}
+          <div className="pointer-events-none absolute inset-x-[-5%] bottom-0 h-28">
+            {/* Dark mode arc */}
+            <div
+              className="hidden dark:block absolute inset-x-0 bottom-0 h-full"
+              style={{
+                background:
+                  'radial-gradient(1200px 140px at 50% 100%, rgba(16,185,129,0.35) 0%, rgba(16,185,129,0.18) 35%, rgba(16,185,129,0.06) 60%, transparent 70%)',
+                filter: 'blur(6px)'
+              }}
+            />
+            <div className="hidden dark:block absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent opacity-80" />
+
+            {/* Light mode arc */}
+            <div
+              className="dark:hidden absolute inset-x-0 bottom-0 h-full"
+              style={{
+                background:
+                  'radial-gradient(1200px 140px at 50% 100%, rgba(34,197,94,0.28) 0%, rgba(34,197,94,0.14) 35%, rgba(34,197,94,0.05) 60%, transparent 70%)',
+                filter: 'blur(6px)'
+              }}
+            />
+            <div className="dark:hidden absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent opacity-70" />
+          </div>
         </div>
 
         <div className="container-custom relative z-10">
           <div className="max-w-5xl mx-auto">
             {/* Header Content */}
             <div className="text-center space-y-6 py-12">
-              <div className="inline-flex items-center space-x-2 bg-green-50 border border-green-200 rounded-full px-4 py-1">
-                <Sparkles className="text-green-600" size={16} />
-                <span className="text-green-700 text-sm font-semibold">AI-Powered GitHub Issue Resolution</span>
+              <div className="inline-flex items-center space-x-2 bg-green-50 dark:bg-emerald-900/30 border border-green-200 dark:border-emerald-800 rounded-full px-4 py-1">
+                <Sparkles className="text-green-600 dark:text-emerald-400" size={16} />
+                <span className="text-green-700 dark:text-emerald-300 text-sm font-semibold">AI-Powered GitHub Issue Resolution</span>
               </div>
 
-              <h1 className="text-5xl md:text-6xl font-black text-gray-900 leading-tight tracking-tight">
+              <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-gray-100 leading-tight tracking-tight">
                 Solve bugs With
                 <span className="gradient-text"> Iterra AI</span>
               </h1>
 
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 Solve any GitHub issue by importing the issue URL.
               </p>
             </div>
 
             {/* Import Card */}
             <div className="max-w-3xl mx-auto">
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+              <div className="bg-white dark:bg-[var(--card-bg)] rounded-2xl shadow-xl border border-gray-100 dark:border-[var(--border-primary)] p-8">
                 <form onSubmit={handleImport} className="space-y-4">
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Paste GitHub Issue URL
                     </label>
                     <div className="flex gap-3">
@@ -146,7 +166,7 @@ export default function LandingPage() {
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
                         placeholder="https://github.com/facebook/react/issues/12345"
-                        className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-[#0b0f1a] text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                       />
                       <button
                         type="submit"
@@ -156,7 +176,7 @@ export default function LandingPage() {
                         Import Issue
                       </button>
                     </div>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       Example: https://github.com/facebook/react/issues/12345
                     </p>
                   </div>
@@ -164,33 +184,31 @@ export default function LandingPage() {
 
                 {/* Features List */}
                 <div className="mt-6 grid md:grid-cols-3 gap-4">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="text-green-600" size={16} />
-                    <span className="text-sm text-gray-600">Auto PR Creation</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="text-green-600" size={16} />
-                    <span className="text-sm text-gray-600">AI Code Analysis</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="text-green-600" size={16} />
-                    <span className="text-sm text-gray-600">Instant Solutions</span>
-                  </div>
+                  {[
+                    'Auto PR Creation',
+                    'AI Code Analysis',
+                    'Instant Solutions',
+                  ].map(label => (
+                    <div key={label} className="flex items-center gap-2">
+                      <CheckCircle2 className="text-green-600 dark:text-emerald-400" size={16} />
+                      <span className="text-sm text-gray-600 dark:text-gray-300">{label}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               {/* Social Proof */}
-              <div className="mt-8 flex items-center justify-center gap-8 text-gray-600">
+              <div className="mt-8 flex items-center justify-center gap-8 text-gray-600 dark:text-gray-300">
                 <div className="flex items-center gap-2">
-                  <Users size={20} className="text-green-600" />
+                  <Users size={20} className="text-green-600 dark:text-emerald-400" />
                   <span className="text-sm font-medium">500+ Developers</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <GitBranch size={20} className="text-green-600" />
+                  <GitBranch size={20} className="text-green-600 dark:text-emerald-400" />
                   <span className="text-sm font-medium">10K+ Issues Solved</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Zap size={20} className="text-green-600" />
+                  <Zap size={20} className="text-green-600 dark:text-emerald-400" />
                   <span className="text-sm font-medium">30s Average Response</span>
                 </div>
               </div>
@@ -203,77 +221,77 @@ export default function LandingPage() {
       <section id="features" className="section section-alt">
         <div className="container-custom">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100">
               Everything You Need to Solve Issues
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Powerful features designed to make bug resolution effortless
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="card-feature group">
+            <div className="card-feature group bg-[var(--card-bg)] border border-[var(--border-primary)]">
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <Bot className="text-white" size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">AI-Powered Analysis</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">AI-Powered Analysis</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Advanced AI models analyze your issues, understand context, and generate accurate solutions in seconds.
               </p>
             </div>
 
             {/* Feature 2 */}
-            <div className="card-feature group">
+            <div className="card-feature group bg-[var(--card-bg)] border border-[var(--border-primary)]">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <GitBranch className="text-white" size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Auto PR Creation</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Auto PR Creation</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Automatically creates pull requests with solutions. Review, approve, and merge with one click.
               </p>
             </div>
 
             {/* Feature 3 */}
-            <div className="card-feature group">
+            <div className="card-feature group bg-[var(--card-bg)] border border-[var(--border-primary)]">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <Code className="text-white" size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Smart Code Generation</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Smart Code Generation</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Generates production-ready code fixes with proper syntax, best practices, and comprehensive testing.
               </p>
             </div>
 
             {/* Feature 4 */}
-            <div className="card-feature group">
+            <div className="card-feature group bg-[var(--card-bg)] border border-[var(--border-primary)]">
               <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <Shield className="text-white" size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Secure & Private</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Secure & Private</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Your code never leaves your repository. We only read what's necessary and never store sensitive data.
               </p>
             </div>
 
             {/* Feature 5 */}
-            <div className="card-feature group">
+            <div className="card-feature group bg-[var(--card-bg)] border border-[var(--border-primary)]">
               <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <Zap className="text-white" size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Lightning Fast</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Lightning Fast</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Get solutions in under 30 seconds. Save hours of debugging time and ship faster.
               </p>
             </div>
 
             {/* Feature 6 */}
-            <div className="card-feature group">
+            <div className="card-feature group bg-[var(--card-bg)] border border-[var(--border-primary)]">
               <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <Rocket className="text-white" size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Open Source Ready</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Open Source Ready</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Contribute to any public repository. Fork, solve, and create PRs automatically.
               </p>
             </div>
@@ -285,10 +303,10 @@ export default function LandingPage() {
       <section id="how-it-works" className="section">
         <div className="container-custom">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100">
               How It Works
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               From issue to PR in 4 simple steps
             </p>
           </div>
@@ -300,8 +318,8 @@ export default function LandingPage() {
                 1
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Connect GitHub</h3>
-                <p className="text-gray-600 text-lg leading-relaxed">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Connect GitHub</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                   Sign in with GitHub and connect your repositories. We'll automatically sync your open issues.
                 </p>
               </div>
@@ -313,8 +331,8 @@ export default function LandingPage() {
                 2
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Select an Issue</h3>
-                <p className="text-gray-600 text-lg leading-relaxed">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Select an Issue</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                   Choose any issue from your repos or import external issues from open-source projects.
                 </p>
               </div>
@@ -326,8 +344,8 @@ export default function LandingPage() {
                 3
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">AI Generates Solution</h3>
-                <p className="text-gray-600 text-lg leading-relaxed">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">AI Generates Solution</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                   Our AI analyzes the issue, understands your codebase, and generates a comprehensive solution.
                 </p>
               </div>
@@ -339,8 +357,8 @@ export default function LandingPage() {
                 4
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Review & Create PR</h3>
-                <p className="text-gray-600 text-lg leading-relaxed">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Review & Create PR</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                   Review the solution, make adjustments if needed, and create a pull request with one click.
                 </p>
               </div>
@@ -364,43 +382,43 @@ export default function LandingPage() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               {/* Left Column */}
               <div className="space-y-6">
-                <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100">
                   Why Developers Love Iterra AI
                 </h2>
-                <p className="text-xl text-gray-600 leading-relaxed">
+                <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
                   Join hundreds of developers who are shipping faster and building better software.
                 </p>
 
                 <div className="space-y-4 pt-4">
                   <div className="flex items-start space-x-3">
-                    <CheckCircle2 className="text-green-600 flex-shrink-0 mt-1" size={24} />
+                    <CheckCircle2 className="text-green-600 dark:text-emerald-400 flex-shrink-0 mt-1" size={24} />
                     <div>
-                      <h3 className="font-semibold text-gray-900 text-lg">Save 10+ Hours Weekly</h3>
-                      <p className="text-gray-600">Automate repetitive debugging and focus on features</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">Save 10+ Hours Weekly</h3>
+                      <p className="text-gray-600 dark:text-gray-300">Automate repetitive debugging and focus on features</p>
                     </div>
                   </div>
 
                   <div className="flex items-start space-x-3">
-                    <CheckCircle2 className="text-green-600 flex-shrink-0 mt-1" size={24} />
+                    <CheckCircle2 className="text-green-600 dark:text-emerald-400 flex-shrink-0 mt-1" size={24} />
                     <div>
-                      <h3 className="font-semibold text-gray-900 text-lg">Ship Faster</h3>
-                      <p className="text-gray-600">Resolve issues in minutes, not hours or days</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">Ship Faster</h3>
+                      <p className="text-gray-600 dark:text-gray-300">Resolve issues in minutes, not hours or days</p>
                     </div>
                   </div>
 
                   <div className="flex items-start space-x-3">
-                    <CheckCircle2 className="text-green-600 flex-shrink-0 mt-1" size={24} />
+                    <CheckCircle2 className="text-green-600 dark:text-emerald-400 flex-shrink-0 mt-1" size={24} />
                     <div>
-                      <h3 className="font-semibold text-gray-900 text-lg">Better Code Quality</h3>
-                      <p className="text-gray-600">AI follows best practices and coding standards</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">Better Code Quality</h3>
+                      <p className="text-gray-600 dark:text-gray-300">AI follows best practices and coding standards</p>
                     </div>
                   </div>
 
                   <div className="flex items-start space-x-3">
-                    <CheckCircle2 className="text-green-600 flex-shrink-0 mt-1" size={24} />
+                    <CheckCircle2 className="text-green-600 dark:text-emerald-400 flex-shrink-0 mt-1" size={24} />
                     <div>
-                      <h3 className="font-semibold text-gray-900 text-lg">Contribute to Open Source</h3>
-                      <p className="text-gray-600">Help popular projects with AI-powered solutions</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">Contribute to Open Source</h3>
+                      <p className="text-gray-600 dark:text-gray-300">Help popular projects with AI-powered solutions</p>
                     </div>
                   </div>
                 </div>
@@ -410,19 +428,19 @@ export default function LandingPage() {
               <div className="grid grid-cols-2 gap-6">
                 <div className="card text-center">
                   <div className="text-5xl font-black gradient-text-primary mb-2">10x</div>
-                  <div className="text-gray-600 font-medium">Faster Resolution</div>
+                  <div className="text-gray-600 dark:text-gray-300 font-medium">Faster Resolution</div>
                 </div>
                 <div className="card text-center">
                   <div className="text-5xl font-black gradient-text-primary mb-2">95%</div>
-                  <div className="text-gray-600 font-medium">Accuracy Rate</div>
+                  <div className="text-gray-600 dark:text-gray-300 font-medium">Accuracy Rate</div>
                 </div>
                 <div className="card text-center">
                   <div className="text-5xl font-black gradient-text-primary mb-2">30s</div>
-                  <div className="text-gray-600 font-medium">Avg Response Time</div>
+                  <div className="text-gray-600 dark:text-gray-300 font-medium">Avg Response Time</div>
                 </div>
                 <div className="card text-center">
                   <div className="text-5xl font-black gradient-text-primary mb-2">500+</div>
-                  <div className="text-gray-600 font-medium">Happy Developers</div>
+                  <div className="text-gray-600 dark:text-gray-300 font-medium">Happy Developers</div>
                 </div>
               </div>
             </div>

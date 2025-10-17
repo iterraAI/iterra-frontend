@@ -84,8 +84,8 @@ export default function Issues() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Issues</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Issues</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">
             Select an issue to solve with AI
           </p>
         </div>
@@ -101,19 +101,19 @@ export default function Issues() {
 
       {/* Tabs - GitHub Style */}
       <div className="card p-0 overflow-hidden">
-        <div className="flex border-b border-gray-200">
+        <div className="flex border-b border-gray-200 dark:border-[var(--border-primary)]">
           <button
             onClick={() => setActiveTab('open')}
             className={`flex items-center space-x-2 px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
               activeTab === 'open'
-                ? 'border-green-600 text-green-700 bg-green-50'
-                : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                ? 'border-green-600 text-green-700 bg-green-50 dark:bg-[rgba(16,185,129,0.08)]'
+                : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#141519]'
             }`}
           >
             <AlertCircle size={18} />
             <span>Open</span>
             <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-              activeTab === 'open' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+              activeTab === 'open' ? 'bg-green-100 text-green-700' : 'bg-gray-100 dark:bg-[#1e1f23] text-gray-600 dark:text-gray-300'
             }`}>
               {counts.open}
             </span>
@@ -123,14 +123,14 @@ export default function Issues() {
             onClick={() => setActiveTab('closed')}
             className={`flex items-center space-x-2 px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
               activeTab === 'closed'
-                ? 'border-purple-600 text-purple-700 bg-purple-50'
-                : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                ? 'border-purple-600 text-purple-700 bg-purple-50 dark:bg-[#1a1323]'
+                : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#141519]'
             }`}
           >
             <CheckCircle2 size={18} />
             <span>Closed</span>
             <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-              activeTab === 'closed' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'
+              activeTab === 'closed' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 dark:bg-[#1e1f23] text-gray-600 dark:text-gray-300'
             }`}>
               {counts.closed}
             </span>
@@ -140,13 +140,13 @@ export default function Issues() {
             onClick={() => setActiveTab('all')}
             className={`flex items-center space-x-2 px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
               activeTab === 'all'
-                ? 'border-blue-600 text-blue-700 bg-blue-50'
-                : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                ? 'border-blue-600 text-blue-700 bg-blue-50 dark:bg-[#101520]'
+                : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#141519]'
             }`}
           >
             <span>All</span>
             <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-              activeTab === 'all' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'
+              activeTab === 'all' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 dark:bg-[#1e1f23] text-gray-600 dark:text-gray-300'
             }`}>
               {counts.all}
             </span>
@@ -158,12 +158,12 @@ export default function Issues() {
           {filteredIssues.length === 0 ? (
             <div className="text-center py-12">
               <AlertCircle className="mx-auto text-gray-400" size={48} />
-              <h3 className="mt-4 text-lg font-medium text-gray-700">
+              <h3 className="mt-4 text-lg font-medium text-gray-700 dark:text-gray-300">
                 {activeTab === 'open' && 'No open issues'}
                 {activeTab === 'closed' && 'No closed issues'}
                 {activeTab === 'all' && 'No issues found'}
               </h3>
-              <p className="text-gray-500 mt-2">
+              <p className="text-gray-500 dark:text-gray-400 mt-2">
                 {activeTab === 'all' 
                   ? 'Fetch issues from your repositories to get started'
                   : `Switch to another tab to see ${activeTab === 'open' ? 'closed' : 'open'} issues`
@@ -179,31 +179,31 @@ export default function Issues() {
             </div>
           ) : (
             filteredIssues.map((issue: any) => (
-              <div key={issue._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all bg-white">
+              <div key={issue._id} className="border border-gray-200 dark:border-[var(--border-primary)] rounded-lg p-4 hover:shadow-md transition-all bg-white dark:bg-[var(--card-bg)]">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-4 flex-1">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 ${
-                      issue.status === 'pr_created' || issue.status === 'solved' ? 'bg-purple-100' :
-                      issue.status === 'analyzing' ? 'bg-yellow-100' :
-                      issue.status === 'failed' ? 'bg-red-100' :
-                      issue.status === 'closed' ? 'bg-gray-100' : 'bg-orange-100'
+                      issue.status === 'pr_created' || issue.status === 'solved' ? 'bg-purple-100 dark:bg-[#2a193d]' :
+                      issue.status === 'analyzing' ? 'bg-yellow-100 dark:bg-[#2a210f]' :
+                      issue.status === 'failed' ? 'bg-red-100 dark:bg-[#2a1212]' :
+                      issue.status === 'closed' ? 'bg-gray-100 dark:bg-[#1e1f23]' : 'bg-orange-100 dark:bg-[#2a1e12]'
                     }`}>
                       {getStatusIcon(issue.status)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-2">
-                        <h3 className="font-bold text-lg text-gray-900">{issue.title}</h3>
-                        <span className="text-gray-500 text-sm">#{issue.issueNumber}</span>
+                        <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100">{issue.title}</h3>
+                        <span className="text-gray-500 dark:text-gray-400 text-sm">#{issue.issueNumber}</span>
                       </div>
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2">
                         {issue.body || 'No description provided'}
                       </p>
                       <div className="flex items-center flex-wrap gap-2">
-                        <span className="text-xs text-gray-500">{issue.repoFullName}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">{issue.repoFullName}</span>
                         {issue.labels?.map((label: string) => (
                           <span
                             key={label}
-                            className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded"
+                            className="px-2 py-0.5 bg-blue-100 dark:bg-[#1e1f23] text-blue-700 dark:text-gray-300 text-xs rounded"
                           >
                             {label}
                           </span>
@@ -212,7 +212,7 @@ export default function Issues() {
                           {issue.status === 'pr_created' ? 'PR Created' : 
                            issue.status === 'pending' ? 'open' : issue.status}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
                           {new Date(issue.createdAt).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
@@ -225,7 +225,7 @@ export default function Issues() {
                           href={issue.htmlUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-green-600 hover:underline flex items-center space-x-1"
+                          className="text-xs text-green-600 dark:text-emerald-400 hover:underline flex items-center space-x-1"
                         >
                           <span>View on GitHub</span>
                           <ExternalLink size={12} />

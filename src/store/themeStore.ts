@@ -1,39 +1,56 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+type ThemePreference = 'light' | 'dark' | 'system'
+
 interface ThemeState {
-  theme: 'light' | 'dark'
-  toggleTheme: () => void
-  setTheme: (theme: 'light' | 'dark') => void
+  preference: ThemePreference
+  resolvedTheme: 'light' | 'dark'
+  setPreference: (pref: ThemePreference) => void
+  applyTheme: (pref?: ThemePreference) => void
+}
+
+const getSystemTheme = (): 'light' | 'dark' => {
+  if (typeof window === 'undefined') return 'light'
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
 export const useThemeStore = create<ThemeState>()(
   persist(
-    (set) => ({
-      theme: 'light',
-      toggleTheme: () =>
-        set((state) => {
-          const newTheme = state.theme === 'light' ? 'dark' : 'light'
-          // Update document class for CSS
-          document.documentElement.classList.remove('light', 'dark')
-          document.documentElement.classList.add(newTheme)
-          return { theme: newTheme }
-        }),
-      setTheme: (theme) => {
-        document.documentElement.classList.remove('light', 'dark')
-        document.documentElement.classList.add(theme)
-        set({ theme })
+    (set, get) => ({
+      preference: 'system',
+      resolvedTheme: 'light',
+      setPreference: (pref) => {
+        set({ preference: pref })
+        get().applyTheme(pref)
+      },
+      applyTheme: (pref) => {
+        const preference = pref ?? get().preference
+        const theme = preference === 'system' ? getSystemTheme() : preference
+
+        // Toggle root class for Tailwind dark mode and CSS vars
+        const root = document.documentElement
+        root.classList.remove('light', 'dark')
+        root.classList.add(theme)
+        set({ resolvedTheme: theme })
       },
     }),
     {
-      name: 'theme-storage',
+      name: 'theme-preference',
       onRehydrateStorage: () => (state) => {
-        // Apply theme on app load
-        if (state) {
-          document.documentElement.classList.add(state.theme)
+        if (!state) return
+        // Apply on load
+        state.applyTheme()
+        // Watch system changes when preference is system
+        const mql = window.matchMedia('(prefers-color-scheme: dark)')
+        const onChange = () => {
+          if (state.preference === 'system') state.applyTheme('system')
         }
+        mql.addEventListener?.('change', onChange)
+        // Note: We intentionally do not store cleanup; page unload removes listener
       },
     }
   )
 )
+
 

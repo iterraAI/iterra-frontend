@@ -120,8 +120,8 @@ export default function ValidationDetail() {
   return (
     <div className="space-y-6 max-w-7xl">
       <div>
-        <h1 className="text-3xl font-bold text-white">Validate Solution</h1>
-        <p className="text-white/80 mt-2">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Validate Solution</h1>
+        <p className="text-gray-600 dark:text-gray-300 mt-2">
           Review this AI-generated solution carefully before creating a pull request
         </p>
       </div>
@@ -129,33 +129,33 @@ export default function ValidationDetail() {
       {/* Issue Info + Risk Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2 card">
-          <h2 className="text-2xl font-bold mb-2">{solution.issueId?.title}</h2>
-          <p className="text-gray-600 mb-4">
+          <h2 className="text-2xl font-bold mb-2 dark:text-gray-100">{solution.issueId?.title}</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
             Issue #{solution.issueId?.issueNumber} • {solution.metadata?.repository}
           </p>
           
           <div className="flex flex-wrap gap-2 mb-4">
-            <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-lg font-medium">
+            <span className="px-3 py-1 bg-blue-100 dark:bg-[#1e1f23] text-blue-700 dark:text-gray-300 text-sm rounded-lg font-medium">
               🤖 {solution.aiModel}
             </span>
             {classification.type && (
-              <span className="px-3 py-1 bg-purple-100 text-purple-700 text-sm rounded-lg font-medium">
+              <span className="px-3 py-1 bg-purple-100 dark:bg-[#2a193d] text-purple-700 dark:text-gray-300 text-sm rounded-lg font-medium">
                 📝 {classification.type}
               </span>
             )}
             {classification.complexity && (
               <span className={`px-3 py-1 text-sm rounded-lg font-medium ${
-                classification.complexity === 'simple' ? 'bg-green-100 text-green-700' :
-                classification.complexity === 'complex' ? 'bg-orange-100 text-orange-700' :
-                'bg-yellow-100 text-yellow-700'
+                classification.complexity === 'simple' ? 'bg-green-100 text-green-700 dark:bg-[rgba(16,185,129,0.12)] dark:text-emerald-400' :
+                classification.complexity === 'complex' ? 'bg-orange-100 text-orange-700 dark:bg-[#2a1e12] dark:text-orange-400' :
+                'bg-yellow-100 text-yellow-700 dark:bg-[#2a210f] dark:text-yellow-400'
               }`}>
                 ⚡ {classification.complexity}
               </span>
             )}
             <span className={`px-3 py-1 text-sm rounded-lg font-medium ${
-              solution.confidence >= 80 ? 'bg-green-100 text-green-700' :
-              solution.confidence >= 60 ? 'bg-yellow-100 text-yellow-700' :
-              'bg-red-100 text-red-700'
+              solution.confidence >= 80 ? 'bg-green-100 text-green-700 dark:bg-[rgba(16,185,129,0.12)] dark:text-emerald-400' :
+              solution.confidence >= 60 ? 'bg-yellow-100 text-yellow-700 dark:bg-[#2a210f] dark:text-yellow-400' :
+              'bg-red-100 text-red-700 dark:bg-[#2a1212] dark:text-red-400'
             }`}>
               🎯 {solution.confidence}% confidence
             </span>
@@ -163,9 +163,9 @@ export default function ValidationDetail() {
         </div>
 
         {/* Risk Score Card */}
-        <div className="card bg-gradient-to-br from-gray-50 to-white border-2">
+        <div className="card bg-gradient-to-br from-gray-50 to-white dark:from-[var(--card-bg)] dark:to-[var(--card-bg)] border-2 dark:border-[var(--border-primary)]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold">Risk Assessment</h3>
+            <h3 className="text-lg font-bold dark:text-gray-100">Risk Assessment</h3>
             <Shield className="text-gray-400" size={24} />
           </div>
           <div className="flex justify-center mb-4">
@@ -175,7 +175,7 @@ export default function ValidationDetail() {
               size="lg" 
             />
           </div>
-          <p className="text-sm text-gray-600 text-center">
+          <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
             {riskLevel === 'low' && '✅ Changes look safe'}
             {riskLevel === 'medium' && '⚠️ Review carefully'}
             {riskLevel === 'high' && '🔶 High risk - test thoroughly'}
@@ -189,7 +189,7 @@ export default function ValidationDetail() {
         <div className="card">
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
             <FileCode size={24} />
-            Change Statistics
+            <span className="dark:text-gray-100">Change Statistics</span>
           </h3>
           <ChangeStats stats={validation.stats} />
         </div>
@@ -197,14 +197,14 @@ export default function ValidationDetail() {
 
       {/* Warnings */}
       {validation.warnings && validation.warnings.length > 0 && (
-        <div className="card bg-yellow-50 border-2 border-yellow-200">
-          <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-yellow-800">
+        <div className="card bg-yellow-50 dark:bg-[#1f1a0a] border-2 border-yellow-200 dark:border-[var(--border-primary)]">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-yellow-800 dark:text-gray-100">
             <AlertTriangle size={24} />
             Warnings ({validation.warnings.length})
           </h3>
           <ul className="space-y-2">
             {validation.warnings.map((warning: string, idx: number) => (
-              <li key={idx} className="flex items-start gap-2 text-yellow-800">
+              <li key={idx} className="flex items-start gap-2 text-yellow-800 dark:text-gray-300">
                 <span className="text-yellow-600 mt-1">⚠️</span>
                 <span>{warning}</span>
               </li>
@@ -215,14 +215,14 @@ export default function ValidationDetail() {
 
       {/* Suggestions */}
       {validation.suggestions && validation.suggestions.length > 0 && (
-        <div className="card bg-blue-50 border-2 border-blue-200">
-          <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-blue-800">
+        <div className="card bg-blue-50 dark:bg-[#101520] border-2 border-blue-200 dark:border-[var(--border-primary)]">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-blue-800 dark:text-gray-100">
             <Lightbulb size={24} />
             AI Suggestions
           </h3>
           <ul className="space-y-2">
             {validation.suggestions.map((suggestion: string, idx: number) => (
-              <li key={idx} className="flex items-start gap-2 text-blue-800">
+              <li key={idx} className="flex items-start gap-2 text-blue-800 dark:text-gray-300">
                 <span className="text-blue-600 mt-1">💡</span>
                 <span>{suggestion}</span>
               </li>
@@ -233,14 +233,14 @@ export default function ValidationDetail() {
 
       {/* Test Suggestions */}
       {metadata.testSuggestions && metadata.testSuggestions.length > 0 && (
-        <div className="card bg-green-50 border-2 border-green-200">
-          <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-green-800">
+        <div className="card bg-green-50 dark:bg-[rgba(16,185,129,0.06)] border-2 border-green-200 dark:border-[var(--border-primary)]">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-green-800 dark:text-gray-100">
             <CheckSquare size={24} />
             Testing Checklist
           </h3>
           <ul className="space-y-2">
             {metadata.testSuggestions.map((test: string, idx: number) => (
-              <li key={idx} className="flex items-start gap-2 text-green-800">
+              <li key={idx} className="flex items-start gap-2 text-green-800 dark:text-gray-300">
                 <input type="checkbox" className="mt-1" />
                 <span>{test}</span>
               </li>
@@ -251,17 +251,17 @@ export default function ValidationDetail() {
 
       {/* Analysis */}
       <div className="card">
-        <h3 className="text-xl font-bold mb-4">AI Analysis</h3>
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <p className="text-gray-700 whitespace-pre-wrap">{solution.analysis}</p>
+        <h3 className="text-xl font-bold mb-4 dark:text-gray-100">AI Analysis</h3>
+        <div className="bg-gray-50 dark:bg-[var(--card-bg)] border dark:border-[var(--border-primary)] p-4 rounded-lg">
+          <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{solution.analysis}</p>
         </div>
       </div>
 
       {/* Proposed Solution */}
       <div className="card">
-        <h3 className="text-xl font-bold mb-4">Proposed Solution</h3>
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <p className="text-gray-700 whitespace-pre-wrap">{solution.proposedSolution}</p>
+        <h3 className="text-xl font-bold mb-4 dark:text-gray-100">Proposed Solution</h3>
+        <div className="bg-gray-50 dark:bg-[var(--card-bg)] border dark:border-[var(--border-primary)] p-4 rounded-lg">
+          <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{solution.proposedSolution}</p>
         </div>
       </div>
 
@@ -272,7 +272,7 @@ export default function ValidationDetail() {
             <FileCode className="text-green-600" size={24} />
             <h3 className="text-xl font-bold">Files Changed</h3>
           </div>
-          <p className="text-sm text-gray-500">Red = Removed | Green = Added</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Red = Removed | Green = Added</p>
         </div>
         <div className="space-y-4">
           {solution.filesChanged?.map((file: any, index: number) => (
@@ -293,7 +293,7 @@ export default function ValidationDetail() {
                 </button>
               )}
               {editMode === index && (
-                <div className="p-4 bg-gray-50 rounded-lg mt-2">
+                <div className="p-4 bg-gray-50 dark:bg-[var(--card-bg)] border dark:border-[var(--border-primary)] rounded-lg mt-2">
                   <label className="block text-sm font-medium mb-2">Edit File Content:</label>
                   <textarea
                     value={editedContent}
