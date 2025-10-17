@@ -42,16 +42,16 @@ export default function Layout({ children }: LayoutProps) {
       <aside
         onMouseEnter={() => setSidebarExpanded(true)}
         onMouseLeave={() => setSidebarExpanded(false)}
-        className={`fixed left-0 top-0 h-screen bg-white dark:bg-[#222224] border-r border-gray-200 dark:border-[var(--border-primary)] shadow-sm transition-all duration-300 z-40 ${
+        className={`fixed left-0 top-0 h-screen bg-white dark:bg-[var(--bg-primary)] border-r border-gray-200 dark:border-[var(--border-primary)] shadow-sm transition-all duration-300 z-40 ${
           sidebarExpanded ? 'w-56' : 'w-16'
         }`}
       >
         {/* Logo at the top of sidebar */}
-        <div className="py-3 px-4 border-b border-gray-200 dark:border-[var(--border-primary)]">
+        {/* <div className="py-3 px-4 border-b border-gray-200 dark:border-[var(--border-primary)]">
           <Link to="/dashboard">
-            {/* <img src={logo} alt="Iterra AI" className={`h-10 transition-all duration-300 ${sidebarExpanded ? 'w-28' : 'w-8'}`} /> */}
+            <img src={logo} alt="Iterra AI" className={`h-10 transition-all duration-300 ${sidebarExpanded ? 'w-28' : 'w-8'}`} />
           </Link>
-        </div>
+        </div> */}
 
         {/* Navigation Items */}
         <nav className="py-4">
