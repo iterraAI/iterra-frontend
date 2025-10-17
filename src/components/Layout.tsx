@@ -204,7 +204,7 @@ export default function Layout({ children }: LayoutProps) {
         {/* Footer */}
         <footer className="max-w-[1400px] mx-auto px-6 py-6 mt-12">
           <div className="text-center text-gray-400 text-xs">
-            © 2025 Iterra AI
+            © 2025 Iterra AI.
           </div>
         </footer>
       </div>
