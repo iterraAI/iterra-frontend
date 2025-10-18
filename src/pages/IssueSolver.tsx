@@ -3,10 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-import { Sparkles, Code, FileCode, AlertCircle, Loader as LoaderIcon } from 'lucide-react'
+import { Sparkles, Code, FileCode, AlertCircle, Loader as LoaderIcon, Crown } from 'lucide-react'
 import ProgressTracker, { AI_ANALYSIS_STEPS } from '../components/ProgressTracker'
 import DiffViewer from '../components/DiffViewer'
 import Loader from '../components/Loader'
+import UpgradePrompt from '../components/UpgradePrompt'
 import { authenticatedGet } from '../utils/api'
 
 export default function IssueSolver() {
@@ -15,6 +16,8 @@ export default function IssueSolver() {
   const [selectedModel, setSelectedModel] = useState('llama-3.3-70b-versatile')
   const [solution, setSolution] = useState<any>(null)
   const [analysisStep, setAnalysisStep] = useState(0)
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
+  const [upgradeReason, setUpgradeReason] = useState<'model_access' | 'usage_limit' | 'premium_feature'>('premium_feature')
 
   // Fetch issue details
   const { data: issueData, isLoading: issueLoading } = useQuery({
@@ -30,6 +33,15 @@ export default function IssueSolver() {
     queryKey: ['ai-models'],
     queryFn: async () => {
       const res = await authenticatedGet('/api/ai/models')
+      return res.data
+    }
+  })
+
+  // Fetch user subscription details
+  const { data: subscriptionData } = useQuery({
+    queryKey: ['subscription-details'],
+    queryFn: async () => {
+      const res = await authenticatedGet('/api/payments/subscription')
       return res.data
     }
   })
@@ -63,10 +75,37 @@ export default function IssueSolver() {
       // Don't auto-redirect - let user review first
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Failed to generate solution')
+      const errorData = error.response?.data
+      
+      // Handle subscription-related errors
+      if (errorData?.error === 'Premium subscription required') {
+        setUpgradeReason('model_access')
+        setShowUpgradePrompt(true)
+      } else if (errorData?.error === 'Usage limit exceeded') {
+        setUpgradeReason('usage_limit')
+        setShowUpgradePrompt(true)
+      } else {
+        toast.error(errorData?.error || 'Failed to generate solution')
+      }
+      
       setAnalysisStep(0)
     }
   })
+
+  // Handle model selection with payment checks
+  const handleModelSelect = (modelId: string) => {
+    const model = modelsData?.allModels?.find((m: any) => m.id === modelId)
+    const userPlan = subscriptionData?.subscription?.plan || 'FREE'
+    
+    // Check if user has access to this model
+    if (model && model.provider !== 'groq' && userPlan === 'FREE') {
+      setUpgradeReason('model_access')
+      setShowUpgradePrompt(true)
+      return
+    }
+    
+    setSelectedModel(modelId)
+  }
 
   if (issueLoading) {
     return <Loader variant="fullPage" text="Loading issue details..." />
@@ -127,30 +166,57 @@ export default function IssueSolver() {
         <div className="card">
           <h3 className="text-xl font-bold mb-4 dark:text-gray-100">Select AI Model</h3>
           <div className="grid md:grid-cols-2 gap-4">
-            {modelsData?.models?.map((model: any) => (
-              <div
-                key={model.id}
-                onClick={() => setSelectedModel(model.id)}
-                className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                  selectedModel === model.id
-                    ? 'border-green-600 bg-green-50 dark:bg-[rgba(16,185,129,0.08)]'
-                    : 'border-gray-200 dark:border-[var(--border-primary)] hover:border-green-300'
-                }`}
-              >
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="radio"
-                    checked={selectedModel === model.id}
-                    onChange={() => setSelectedModel(model.id)}
-                    className="w-4 h-4"
-                  />
-                  <div>
-                    <p className="font-semibold dark:text-gray-100">{model.name}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">{model.description}</p>
+            {modelsData?.allModels?.map((model: any) => {
+              const isAccessible = modelsData?.models?.some((m: any) => m.id === model.id)
+              const userPlan = subscriptionData?.subscription?.plan || 'FREE'
+              const requiresUpgrade = model.provider !== 'groq' && userPlan === 'FREE'
+              
+              return (
+                <div
+                  key={model.id}
+                  onClick={() => handleModelSelect(model.id)}
+                  className={`p-4 border-2 rounded-lg cursor-pointer transition-all relative ${
+                    selectedModel === model.id
+                      ? 'border-green-600 bg-green-50 dark:bg-[rgba(16,185,129,0.08)]'
+                      : isAccessible
+                      ? 'border-gray-200 dark:border-[var(--border-primary)] hover:border-green-300'
+                      : 'border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-900/20'
+                  }`}
+                >
+                  {requiresUpgrade && (
+                    <div className="absolute top-2 right-2">
+                      <Crown className="text-orange-500" size={16} />
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="radio"
+                      checked={selectedModel === model.id}
+                      onChange={() => handleModelSelect(model.id)}
+                      className="w-4 h-4"
+                      disabled={!isAccessible}
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <p className="font-semibold dark:text-gray-100">{model.name}</p>
+                        {requiresUpgrade && (
+                          <span className="px-2 py-1 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 text-xs rounded-full">
+                            Pro Required
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">{model.description}</p>
+                      {requiresUpgrade && (
+                        <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                          Upgrade to Pro to access this model
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           <button
@@ -251,6 +317,14 @@ export default function IssueSolver() {
           </div>
         </div>
       )}
+
+      {/* Upgrade Prompt Modal */}
+      <UpgradePrompt
+        isOpen={showUpgradePrompt}
+        onClose={() => setShowUpgradePrompt(false)}
+        reason={upgradeReason}
+        currentPlan={subscriptionData?.subscription?.plan || 'FREE'}
+      />
     </div>
   )
 }

@@ -12,10 +12,12 @@ import {
   Search,
   Command,
   ChevronDown,
-  Bell
+  Bell,
+  CreditCard
 } from 'lucide-react'
 import logo from '../assets/logo_new.png'
 import ThemeSwitcher from './ThemeSwitcher'
+import SubscriptionStatus from './SubscriptionStatus'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -130,6 +132,10 @@ export default function Layout({ children }: LayoutProps) {
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{user.email}</p>
                     </div>
                     <div className="py-2">
+                      <Link to="/pricing" className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#141519] transition-colors flex items-center gap-2">
+                        <CreditCard size={14} />
+                        <span>Pricing & Billing</span>
+                      </Link>
                       <button className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#141519] transition-colors">
                         Profile Settings
                       </button>
@@ -198,6 +204,12 @@ export default function Layout({ children }: LayoutProps) {
 
         {/* Main Content */}
         <div className="max-w-[1400px] mx-auto px-6 py-8">
+          {/* Subscription Status - Only show on dashboard */}
+          {location.pathname === '/dashboard' && (
+            <div className="mb-6">
+              <SubscriptionStatus />
+            </div>
+          )}
           {children}
         </div>
 
