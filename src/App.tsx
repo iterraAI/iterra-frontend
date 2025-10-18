@@ -13,6 +13,7 @@ import Validations from './pages/Validations'
 import ValidationDetail from './pages/ValidationDetail'
 import PullRequests from './pages/PullRequests'
 import Contribute from './pages/Contribute'
+import Pricing from './pages/Pricing'
 
 function App() {
   const { checkAuth } = useAuthStore()
@@ -36,6 +37,7 @@ function App() {
         <Route path="/validations/:solutionId" element={<ProtectedRoute><Layout><ValidationDetail /></Layout></ProtectedRoute>} />
         <Route path="/pull-requests" element={<ProtectedRoute><Layout><PullRequests /></Layout></ProtectedRoute>} />
         <Route path="/contribute" element={<ProtectedRoute><Layout><Contribute /></Layout></ProtectedRoute>} />
+        <Route path="/pricing" element={<Pricing />} />
       </Routes>
     </Router>
   )

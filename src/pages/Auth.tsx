@@ -56,7 +56,7 @@ export default function Auth() {
             {/* Title */}
             <div className="space-y-3">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                Welcome to Bug Resolve
+                Welcome to Iterra AI
               </h1>
               <p className="text-gray-600 dark:text-gray-300 text-lg">
                 Sign in to start solving issues with AI

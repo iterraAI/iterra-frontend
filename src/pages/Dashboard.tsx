@@ -210,7 +210,7 @@ export default function Dashboard() {
         <div className="card bg-gradient-to-br from-green-50 to-blue-50 dark:from-[rgba(16,185,129,0.06)] dark:to-[rgba(16,185,129,0.12)] border-green-200 dark:border-[var(--border-primary)]">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
             <div className="flex-1">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">🎉 Welcome to Bug Resolve!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">🎉 Welcome to Iterra AI!</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Get started by syncing your GitHub repositories or contribute to popular open-source projects.
               </p>

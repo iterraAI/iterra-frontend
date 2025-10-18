@@ -71,6 +71,9 @@ export default function LandingPage() {
                 <a href="#benefits" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
                   Benefits
                 </a>
+                <Link to="/pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
+                  Pricing
+                </Link>
               </div>
             {/* </div> */}
             {/* Logo */}
