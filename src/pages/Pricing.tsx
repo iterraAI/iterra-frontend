@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Check, Star, Zap, Crown, ArrowRight } from 'lucide-react'
 import axios from 'axios'
 import { useAuthStore } from '../store/authStore'
+import { authenticatedGet } from '../utils/api'
 import toast from 'react-hot-toast'
 import Loader from '../components/Loader'
 import PaymentModal from '../components/PaymentModal'
@@ -33,6 +34,21 @@ export default function Pricing() {
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const { user, isLoading: authLoading } = useAuthStore()
   const navigate = useNavigate()
+
+  // Fetch user's current subscription status
+  const { data: userSubscription, isLoading: subscriptionLoading } = useQuery({
+    queryKey: ['subscription-details'],
+    queryFn: async () => {
+      try {
+        const res = await authenticatedGet('/api/payments/subscription')
+        return res.data
+      } catch (error) {
+        console.error('Failed to fetch subscription data:', error)
+        return null
+      }
+    },
+    enabled: !!user
+  })
 
   // Default plans data
   const defaultPlans: PricingData = {
@@ -134,6 +150,13 @@ export default function Pricing() {
       navigate('/auth')
       return
     }
+
+    // Check if user is already on the selected plan
+    const currentPlan = userSubscription?.subscription?.plan || 'FREE'
+    if (currentPlan === selectedPlan) {
+      toast.error(`You are already on the ${selectedPlan} plan`)
+      return
+    }
     
     setShowPaymentModal(true)
   }
@@ -164,7 +187,7 @@ export default function Pricing() {
     }
   }
 
-  if (isLoading || authLoading) {
+  if (isLoading || authLoading || subscriptionLoading) {
     return <Loader variant="fullPage" text="Loading pricing plans..." />
   }
 
@@ -328,10 +351,20 @@ export default function Pricing() {
         <div className="text-center">
           <button
             onClick={handleUpgrade}
-            disabled={selectedPlan === 'FREE'}
+            disabled={selectedPlan === 'FREE' || (user && userSubscription?.subscription?.plan === selectedPlan) || false}
             className="btn btn-primary px-8 py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center space-x-2 mx-auto"
           >
-            <span>{user ? 'Upgrade Now' : 'Sign In to Upgrade'}</span>
+            <span>
+              {user ? 
+                (userSubscription?.subscription?.plan === selectedPlan ? 
+                  `Current Plan` : 
+                  userSubscription?.subscription?.plan === 'FREE' ? 
+                  'Upgrade Now' : 
+                  'Change Plan'
+                ) : 
+                'Sign In to Upgrade'
+              }
+            </span>
             <ArrowRight size={20} />
           </button>
           <p className="text-gray-600 dark:text-gray-300 mt-4 text-sm">

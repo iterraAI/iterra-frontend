@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import logo from '../assets/logo_new.png'
 import ThemeSwitcher from './ThemeSwitcher'
-import SubscriptionStatus from './SubscriptionStatus'
+// import SubscriptionStatus from './SubscriptionStatus'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -136,9 +136,9 @@ export default function Layout({ children }: LayoutProps) {
                         <CreditCard size={14} />
                         <span>Pricing & Billing</span>
                       </Link>
-                      <button className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#141519] transition-colors">
+                      <Link to="/profile-settings" className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#141519] transition-colors">
                         Profile Settings
-                      </button>
+                      </Link>
                       <button className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#141519] transition-colors">
                         Preferences
                       </button>
@@ -207,7 +207,7 @@ export default function Layout({ children }: LayoutProps) {
           {/* Subscription Status - Only show on dashboard */}
           {location.pathname === '/dashboard' && (
             <div className="mb-6">
-              <SubscriptionStatus />
+              {/* <SubscriptionStatus /> */}
             </div>
           )}
           {children}
