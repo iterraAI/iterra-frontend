@@ -11,11 +11,11 @@ import {
   ArrowRight,
   Github,
   Code,
-  Rocket,
-  Users,
-  // TrendingUp
+  Rocket
 } from 'lucide-react'
-import logo from '../assets/logo_new.png'
+// import logo from '../assets/logo_new.png'
+import darkLogo from '../assets/logo_dark.png'
+import lightLogo from '../assets/logo_light.png'
 import ThemeSwitcher from '../components/ThemeSwitcher'
 
 export default function LandingPage() {
@@ -49,15 +49,13 @@ export default function LandingPage() {
     <div className="min-h-screen">
       {/* Navigation */}
       <nav className="bg-transparent backdrop-blur-lg sticky top-0 z-50 shadow-sm">
-        <div className="pl-4 pr-4">
+        <div className=" pr-4">
           <div className="flex items-center justify-between h-16">
-            {/* <div className="flex items-center space-x-8"> */}
+              {/* <div className="flex items-center space-x-8"> */}
               <div className="flex items-center space-x-2">
-                {/* <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-lg">
-                  <Sparkles className="text-white" size={24} />
-                </div>
-                <span className="text-2xl font-bold gradient-text-primary">Bug Resolve</span> */}
-                <img src={logo} alt="Iterra AI" className='h-12 w-42' />
+                {/* Show dark logo in light mode, light logo in dark mode */}
+                <img src={lightLogo} alt="Kodin" className='h-12 w-42 dark:hidden' />
+                <img src={darkLogo} alt="Kodin" className='h-12 w-42 hidden dark:block' />
               </div>
 
               {/* Nav Links */}
@@ -147,7 +145,7 @@ export default function LandingPage() {
 
               <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-gray-100 leading-tight tracking-tight">
                 Solve bugs With
-                <span className="gradient-text"> Iterra AI</span>
+                <span className="gradient-text"> Kodin</span>
               </h1>
 
               <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -200,19 +198,19 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Social Proof */}
-              <div className="mt-8 flex items-center justify-center gap-8 text-gray-600 dark:text-gray-300">
+              {/* Trust Indicators */}
+              <div className="mt-8 flex items-center justify-center gap-8 text-gray-600 dark:text-gray-300 flex-wrap">
                 <div className="flex items-center gap-2">
-                  <Users size={20} className="text-green-600 dark:text-emerald-400" />
-                  <span className="text-sm font-medium">500+ Developers</span>
+                  <Shield size={20} className="text-green-600 dark:text-emerald-400" />
+                  <span className="text-sm font-medium">Secure & Private</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <GitBranch size={20} className="text-green-600 dark:text-emerald-400" />
-                  <span className="text-sm font-medium">10K+ Issues Solved</span>
+                  <Github size={20} className="text-green-600 dark:text-emerald-400" />
+                  <span className="text-sm font-medium">GitHub Integration</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Zap size={20} className="text-green-600 dark:text-emerald-400" />
-                  <span className="text-sm font-medium">30s Average Response</span>
+                  <span className="text-sm font-medium">Lightning Fast</span>
                 </div>
               </div>
             </div>
@@ -240,7 +238,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">AI-Powered Analysis</h3>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                Advanced AI models analyze your issues, understand context, and generate accurate solutions in seconds.
+                Advanced AI analyzes issue context, understands your codebase, and generates targeted solutions with code fixes.
               </p>
             </div>
 
@@ -249,9 +247,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <GitBranch className="text-white" size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Auto PR Creation</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Automated Pull Requests</h3>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                Automatically creates pull requests with solutions. Review, approve, and merge with one click.
+                Review AI-generated solutions and create pull requests directly. Supports both your repositories and external contributions.
               </p>
             </div>
 
@@ -260,9 +258,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <Code className="text-white" size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Smart Code Generation</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Intelligent Code Fixes</h3>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                Generates production-ready code fixes with proper syntax, best practices, and comprehensive testing.
+                Get production-quality code fixes that follow best practices, maintain consistency with your codebase, and include proper documentation.
               </p>
             </div>
 
@@ -271,9 +269,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <Shield className="text-white" size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Secure & Private</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Privacy Focused</h3>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                Your code never leaves your repository. We only read what's necessary and never store sensitive data.
+                Secure GitHub OAuth integration. We only access what you authorize and never store your source code permanently.
               </p>
             </div>
 
@@ -282,9 +280,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                 <Zap className="text-white" size={32} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Lightning Fast</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Time Efficient</h3>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                Get solutions in under 30 seconds. Save hours of debugging time and ship faster.
+                Reduce debugging time significantly. Focus on building features while AI handles repetitive issue resolution tasks.
               </p>
             </div>
 
@@ -323,7 +321,7 @@ export default function LandingPage() {
               <div className="flex-1">
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Connect GitHub</h3>
                 <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-                  Sign in with GitHub and connect your repositories. We'll automatically sync your open issues.
+                  Authenticate with GitHub OAuth. Choose which repositories to grant access to for seamless integration.
                 </p>
               </div>
             </div>
@@ -371,7 +369,7 @@ export default function LandingPage() {
           {/* CTA */}
           <div className="text-center mt-16">
             <Link to="/auth" className="btn btn-primary text-lg px-8 py-4 shadow-xl hover:shadow-2xl">
-              Try It Now - It's Free
+              Get Started Free
               <ArrowRight size={20} />
             </Link>
           </div>
@@ -386,26 +384,26 @@ export default function LandingPage() {
               {/* Left Column */}
               <div className="space-y-6">
                 <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100">
-                  Why Developers Love Iterra AI
+                  Why Developers Love Kodin
                 </h2>
                 <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Join hundreds of developers who are shipping faster and building better software.
+                  Streamline your development workflow with AI-powered issue resolution.
                 </p>
 
                 <div className="space-y-4 pt-4">
                   <div className="flex items-start space-x-3">
                     <CheckCircle2 className="text-green-600 dark:text-emerald-400 flex-shrink-0 mt-1" size={24} />
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">Save 10+ Hours Weekly</h3>
-                      <p className="text-gray-600 dark:text-gray-300">Automate repetitive debugging and focus on features</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">Save Debugging Time</h3>
+                      <p className="text-gray-600 dark:text-gray-300">Automate issue analysis and focus on building features</p>
                     </div>
                   </div>
 
                   <div className="flex items-start space-x-3">
                     <CheckCircle2 className="text-green-600 dark:text-emerald-400 flex-shrink-0 mt-1" size={24} />
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">Ship Faster</h3>
-                      <p className="text-gray-600 dark:text-gray-300">Resolve issues in minutes, not hours or days</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">Faster Development</h3>
+                      <p className="text-gray-600 dark:text-gray-300">Get AI-powered solutions and move forward quickly</p>
                     </div>
                   </div>
 
@@ -427,23 +425,27 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Right Column - Stats */}
+              {/* Right Column - Key Benefits */}
               <div className="grid grid-cols-2 gap-6">
                 <div className="card text-center">
-                  <div className="text-5xl font-black gradient-text-primary mb-2">10x</div>
-                  <div className="text-gray-600 dark:text-gray-300 font-medium">Faster Resolution</div>
+                  <Bot className="mx-auto text-green-600 dark:text-emerald-400 mb-3" size={40} />
+                  <div className="text-gray-900 dark:text-gray-100 font-bold text-lg">AI Analysis</div>
+                  <div className="text-gray-600 dark:text-gray-300 text-sm mt-1">Context-aware solutions</div>
                 </div>
                 <div className="card text-center">
-                  <div className="text-5xl font-black gradient-text-primary mb-2">95%</div>
-                  <div className="text-gray-600 dark:text-gray-300 font-medium">Accuracy Rate</div>
+                  <GitBranch className="mx-auto text-blue-600 dark:text-blue-400 mb-3" size={40} />
+                  <div className="text-gray-900 dark:text-gray-100 font-bold text-lg">Auto PRs</div>
+                  <div className="text-gray-600 dark:text-gray-300 text-sm mt-1">One-click pull requests</div>
                 </div>
                 <div className="card text-center">
-                  <div className="text-5xl font-black gradient-text-primary mb-2">30s</div>
-                  <div className="text-gray-600 dark:text-gray-300 font-medium">Avg Response Time</div>
+                  <Shield className="mx-auto text-purple-600 dark:text-purple-400 mb-3" size={40} />
+                  <div className="text-gray-900 dark:text-gray-100 font-bold text-lg">Secure</div>
+                  <div className="text-gray-600 dark:text-gray-300 text-sm mt-1">OAuth protected access</div>
                 </div>
                 <div className="card text-center">
-                  <div className="text-5xl font-black gradient-text-primary mb-2">500+</div>
-                  <div className="text-gray-600 dark:text-gray-300 font-medium">Happy Developers</div>
+                  <Code className="mx-auto text-orange-600 dark:text-orange-400 mb-3" size={40} />
+                  <div className="text-gray-900 dark:text-gray-100 font-bold text-lg">Quality Code</div>
+                  <div className="text-gray-600 dark:text-gray-300 text-sm mt-1">Best practices built-in</div>
                 </div>
               </div>
             </div>
@@ -455,17 +457,17 @@ export default function LandingPage() {
       <section className="section bg-gradient-to-br from-green-600 to-blue-600 text-white">
         <div className="container-custom text-center space-y-8">
           <h2 className="text-4xl md:text-5xl font-bold">
-            Ready to Solve Issues 10x Faster?
+            Ready to Accelerate Your Development?
           </h2>
           <p className="text-xl md:text-2xl opacity-90 max-w-2xl mx-auto">
-            Join Iterra AI today and let AI handle the debugging while you focus on building amazing products.
+            Start using Kodin today. Let AI assist with debugging while you focus on building great products.
           </p>
           <Link to="/auth" className="btn bg-white text-green-600 hover:bg-gray-100 text-lg px-8 py-4 shadow-2xl inline-flex items-center gap-2">
             <Github size={24} />
             <span>Get Started Free</span>
             <ArrowRight size={20} />
           </Link>
-          <p className="text-sm opacity-75">No credit card required • GitHub account needed</p>
+          <p className="text-sm opacity-75">Free to start • Requires GitHub account</p>
         </div>
       </section>
 
@@ -479,10 +481,11 @@ export default function LandingPage() {
                 {/* <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-lg">
                   <Sparkles className="text-white" size={24} />
                 </div>
-                <span className="text-xl font-bold">Bug Resolve</span> */}
-                <img src={logo} alt="Iterra AI" className='h-12 w-42' />
+                <span className="text-xl font-bold">Kodin</span> */}
+                <img src={darkLogo} alt="Kodin" className='h-12 w-42 dark:hidden' />
+                <img src={lightLogo} alt="Kodin" className='h-12 w-42 hidden dark:block' />
               </div>
-              <p className="text-gray-800 text-sm">
+              <p className="text-gray-600 text-sm">
                 Your AI pair programmer for debugging issues.
               </p>
             </div>
@@ -491,19 +494,20 @@ export default function LandingPage() {
             <div>
               <h3 className="font-semibold mb-4">Product</h3>
               <ul className="space-y-2 text-gray-800 text-sm">
-                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a></li>
-                <li><a href="#benefits" className="hover:text-white transition-colors">Benefits</a></li>
+                <li><a href="#features" className="hover:text-green-600 dark:hover:text-emerald-400 transition-colors">Features</a></li>
+                <li><a href="#how-it-works" className="hover:text-green-600 dark:hover:text-emerald-400 transition-colors">How It Works</a></li>
+                <li><a href="#benefits" className="hover:text-green-600 dark:hover:text-emerald-400 transition-colors">Benefits</a></li>
+                <li><Link to="/pricing" className="hover:text-green-600 dark:hover:text-emerald-400 transition-colors">Pricing</Link></li>
               </ul>
             </div>
 
-            {/* Company */}
+            {/* Resources */}
             <div>
-              <h3 className="font-semibold mb-4">Company</h3>
+              <h3 className="font-semibold mb-4">Resources</h3>
               <ul className="space-y-2 text-gray-800 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><Link to="/dashboard" className="hover:text-green-600 dark:hover:text-emerald-400 transition-colors">Dashboard</Link></li>
+                <li><a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-green-600 dark:hover:text-emerald-400 transition-colors">GitHub</a></li>
+                <li><Link to="/auth" className="hover:text-green-600 dark:hover:text-emerald-400 transition-colors">Sign In</Link></li>
               </ul>
             </div>
 
@@ -511,15 +515,15 @@ export default function LandingPage() {
             <div>
               <h3 className="font-semibold mb-4">Legal</h3>
               <ul className="space-y-2 text-gray-800 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Cookie Policy</a></li>
+                <li><a href="#" className="hover:text-green-600 dark:hover:text-emerald-400 transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-green-600 dark:hover:text-emerald-400 transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-green-600 dark:hover:text-emerald-400 transition-colors">Cookie Policy</a></li>
               </ul>
             </div>
           </div>
 
           <div className=" mt-12 pt-8 text-center text-gray-800 text-sm">
-            © 2025 Iterra AI
+            © 2025 Kodin
           </div>
         </div>
       </footer>

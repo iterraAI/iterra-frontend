@@ -32,7 +32,7 @@ export default function Auth() {
             <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
               <Sparkles className="text-white" size={24} />
             </div>
-            <span className="text-2xl font-bold gradient-text-primary">Bug Resolve</span>
+            <span className="text-2xl font-bold gradient-text-primary">Kodin</span>
           </a>
           
           <a href="/" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium">
@@ -56,7 +56,7 @@ export default function Auth() {
             {/* Title */}
             <div className="space-y-3">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                Welcome to Iterra AI
+                Welcome to Kodin
               </h1>
               <p className="text-gray-600 dark:text-gray-300 text-lg">
                 Sign in to start solving issues with AI
@@ -118,7 +118,7 @@ export default function Auth() {
 
             {/* Terms */}
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              By continuing, you agree to Bug Resolve's{' '}
+              By continuing, you agree to Kodin's{' '}
               <a href="#" className="text-green-600 hover:underline">Terms of Service</a>
               {' '}and{' '}
               <a href="#" className="text-green-600 hover:underline">Privacy Policy</a>
@@ -128,7 +128,7 @@ export default function Auth() {
           {/* Help Text */}
           <div className="mt-8 text-center">
             <p className="text-gray-600 dark:text-gray-300 text-sm">
-              New to Bug Resolve?{' '}
+              New to Kodin?{' '}
               <a href="/#features" className="text-green-600 hover:underline font-medium">
                 Learn how it works
               </a>
@@ -140,7 +140,7 @@ export default function Auth() {
       {/* Footer */}
       <footer className="container-custom py-6 border-t border-gray-200 dark:border-gray-800">
         <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
-          © 2025 Iterra AI
+          © 2025 Kodin
         </div>
       </footer>
     </div>

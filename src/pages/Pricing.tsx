@@ -198,7 +198,7 @@ export default function Pricing() {
         <div className="pl-4 pr-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-2">
-              <img src={logo} alt="Iterra AI" className='h-12 w-42' />
+              <img src={logo} alt="Kodin" className='h-12 w-42' />
             </div>
 
             {/* CTA Buttons */}
@@ -420,7 +420,7 @@ export default function Pricing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <img src={logo} alt="Iterra AI" className='h-8 w-32' />
+              <img src={logo} alt="Kodin" className='h-8 w-32' />
             </div>
             <p className="text-gray-400 mb-4">
               AI-powered issue solving for developers worldwide

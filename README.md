@@ -1,4 +1,4 @@
-# Bug Resolve 🐛✨
+# Kodin 🐛✨
 
 An AI-powered platform that automatically solves GitHub issues using advanced AI models with human validation. Built with a 70% AI + 30% human approach for optimal code quality.
 
