@@ -68,7 +68,7 @@ export default function PullRequests() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Pull Requests</h1>
           <p className="text-gray-600 dark:text-gray-300 mt-2">
-            Track all pull requests created by Bug Resolve
+            Track all pull requests created by Kodin
           </p>
         </div>
         <button

@@ -125,7 +125,7 @@ export default function ProfileSettings() {
         <div className="pl-4 pr-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-2">
-              <img src={logo} alt="Iterra AI" className='h-12 w-42' />
+              <img src={logo} alt="Kodin" className='h-12 w-42' />
             </div>
 
             <div className="flex items-center space-x-3">

@@ -130,7 +130,7 @@ export default function PaymentModal({
       key: 'rzp_test_RSfXcpF1F8PhXj', // Use the test key from your env
       amount: data.order.amount,
       currency: data.order.currency,
-      name: 'Iterra AI',
+      name: 'Kodin',
       description: `AI-Powered Issue Solver - ${planName}`,
       order_id: data.order.id,
       image: '/logo_new.png',

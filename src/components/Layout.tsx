@@ -15,7 +15,8 @@ import {
   Bell,
   CreditCard
 } from 'lucide-react'
-import logo from '../assets/logo_new.png'
+import darkLogo from '../assets/logo_dark.png'
+import lightLogo from '../assets/logo_light.png'
 import ThemeSwitcher from './ThemeSwitcher'
 // import SubscriptionStatus from './SubscriptionStatus'
 
@@ -39,7 +40,7 @@ export default function Layout({ children }: LayoutProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-green-50/30 dark:bg-[var(--bg-secondary)] flex">
+    <div className="min-h-screen flex">
       {/* Sidebar */}
       <aside
         onMouseEnter={() => setSidebarExpanded(true)}
@@ -51,7 +52,7 @@ export default function Layout({ children }: LayoutProps) {
         {/* Logo at the top of sidebar */}
         {/* <div className="py-3 px-4 border-b border-gray-200 dark:border-[var(--border-primary)]">
           <Link to="/dashboard">
-            <img src={logo} alt="Iterra AI" className={`h-10 transition-all duration-300 ${sidebarExpanded ? 'w-28' : 'w-8'}`} />
+            <img src={logo} alt="Kodin" className={`h-10 transition-all duration-300 ${sidebarExpanded ? 'w-28' : 'w-8'}`} />
           </Link>
         </div> */}
 
@@ -164,14 +165,16 @@ export default function Layout({ children }: LayoutProps) {
       </aside>
 
       {/* Main Content Area */}
-      <div className={`flex-1 transition-all duration-300 bg-white dark:bg-[#222224] ${sidebarExpanded ? 'ml-56' : 'ml-16'}`}>
+      {/* <div className={`flex-1 transition-all duration-300 bg-white dark:bg-[#222224] ${sidebarExpanded ? 'ml-56' : 'ml-16'}`}> */}
+      <div className={`flex-1 transition-all duration-300 bg-transparent backdrop-blur-lg sticky top-0 z-50 shadow-sm ${sidebarExpanded ? 'ml-56' : 'ml-16'}`}>
         {/* Navbar */}
         <header className="sticky top-0 z-50  backdrop-blur-xl shadow-sm">
           <div className="flex items-center justify-between px-6 py-3">
             {/* Left: Search */}
             <div className="flex-1 ">
               {/* <h1 className="text-lg font-bold text-gray-900">iterra <span className="text-green-600">AI</span></h1> */}
-              <img src={logo} alt="Iterra AI" className='h-12 w-42' />
+              <img src={lightLogo} alt="Kodin" className='h-12 w-42 dark:hidden' />
+              <img src={darkLogo} alt="Kodin" className='h-12 w-42 hidden dark:block' />
             </div>
             {/* end: Search */}
             <div className="flex-1 flex justify-end">
@@ -203,7 +206,7 @@ export default function Layout({ children }: LayoutProps) {
         </header>
 
         {/* Main Content */}
-        <div className="max-w-[1400px] mx-auto px-6 py-8">
+        <div className="max-w-[1400px] mx-auto px-6 py-8 ">
           {/* Subscription Status - Only show on dashboard */}
           {location.pathname === '/dashboard' && (
             <div className="mb-6">
@@ -216,7 +219,7 @@ export default function Layout({ children }: LayoutProps) {
         {/* Footer */}
         <footer className="max-w-[1400px] mx-auto px-6 py-6 mt-12">
           <div className="text-center text-gray-400 text-xs">
-            © 2025 Iterra AI.
+            © 2025 Kodin.
           </div>
         </footer>
       </div>
