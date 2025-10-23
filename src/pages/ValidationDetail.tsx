@@ -18,6 +18,8 @@ export default function ValidationDetail() {
   const [comments, setComments] = useState('')
   const [editMode, setEditMode] = useState<number | null>(null)
   const [editedContent, setEditedContent] = useState('')
+  const [showRefinement, setShowRefinement] = useState(false)
+  const [refinementFeedback, setRefinementFeedback] = useState('')
 
   // Fetch solution details
   const { data: solution, isLoading } = useQuery({
@@ -64,6 +66,29 @@ export default function ValidationDetail() {
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.error || 'Validation failed')
+    }
+  })
+
+  // Refine mutation
+  const refineMutation = useMutation({
+    mutationFn: async () => {
+      const res = await authenticatedPost(`/api/validations/${solutionId}/refine`, {
+        feedback: refinementFeedback,
+        refinementInstructions: refinementFeedback
+      })
+      return res.data
+    },
+    onSuccess: (data) => {
+      toast.success(`✨ Solution refined! (Refinement #${data.refinementCount})`)
+      queryClient.invalidateQueries({ queryKey: ['solution', solutionId] })
+      queryClient.invalidateQueries({ queryKey: ['validations'] })
+      setShowRefinement(false)
+      setRefinementFeedback('')
+      // Refresh the page data
+      window.location.reload()
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.error || 'Refinement failed')
     }
   })
 
@@ -323,11 +348,91 @@ export default function ValidationDetail() {
         </div>
       </div>
 
+      {/* AI Refinement Section (NEW!) */}
+      <div className="card bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border-2 border-purple-200 dark:border-purple-700">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h3 className="text-xl font-bold text-purple-900 dark:text-purple-100">🤖 Need Changes? Ask AI to Refine</h3>
+            <p className="text-sm text-purple-700 dark:text-purple-300 mt-1">
+              Instead of rejecting, tell the AI what to improve and it'll generate a better solution!
+            </p>
+          </div>
+          {solution?.metadata?.refinementCount > 0 && (
+            <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 text-xs rounded-full">
+              Refined {solution.metadata.refinementCount}x
+            </span>
+          )}
+        </div>
+
+        {!showRefinement ? (
+          <button
+            onClick={() => setShowRefinement(true)}
+            className="btn bg-purple-600 hover:bg-purple-700 text-white flex items-center space-x-2"
+          >
+            <Lightbulb size={20} />
+            <span>Request Refinement</span>
+          </button>
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2 text-purple-900 dark:text-purple-100">
+                What would you like the AI to change?
+              </label>
+              <textarea
+                value={refinementFeedback}
+                onChange={(e) => setRefinementFeedback(e.target.value)}
+                className="input font-normal"
+                rows={5}
+                placeholder={`Examples:
+• "Use JWT authentication instead of sessions"
+• "Add error handling for edge cases"
+• "Focus on the auth.service.ts file, not login.tsx"
+• "Make the solution simpler and more maintainable"
+• "Add TypeScript types for better type safety"`}
+              />
+              <p className="text-xs text-purple-600 dark:text-purple-400 mt-2">
+                💡 Be specific! The more detailed your feedback, the better the refined solution.
+              </p>
+            </div>
+
+            <div className="flex space-x-3">
+              <button
+                onClick={() => refineMutation.mutate()}
+                disabled={!refinementFeedback.trim() || refineMutation.isPending}
+                className="btn btn-primary flex items-center space-x-2"
+              >
+                {refineMutation.isPending ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>AI is refining...</span>
+                  </>
+                ) : (
+                  <>
+                    <Lightbulb size={20} />
+                    <span>Refine Solution</span>
+                  </>
+                )}
+              </button>
+              <button
+                onClick={() => {
+                  setShowRefinement(false)
+                  setRefinementFeedback('')
+                }}
+                disabled={refineMutation.isPending}
+                className="btn btn-secondary"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Validation Form */}
-      <div className="card bg-blue-50 border-2 border-blue-200">
-        <h3 className="text-xl font-bold mb-4">Validation Decision</h3>
+      <div className="card bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-700">
+        <h3 className="text-xl font-bold mb-4 dark:text-blue-100">Validation Decision</h3>
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Comments / Feedback</label>
+          <label className="block text-sm font-medium mb-2 dark:text-blue-200">Comments / Feedback</label>
           <textarea
             value={comments}
             onChange={(e) => setComments(e.target.value)}

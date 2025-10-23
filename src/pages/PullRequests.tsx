@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { GitPullRequest, ExternalLink, RefreshCw, CheckCircle, GitMerge, XCircle } from 'lucide-react'
+import { GitPullRequest, ExternalLink, RefreshCw, CheckCircle, GitMerge, XCircle, AlertTriangle, Tag } from 'lucide-react'
 import Loader from '../components/Loader'
 import { authenticatedGet } from '../utils/api'
 
@@ -172,7 +172,7 @@ export default function PullRequests() {
                       <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
                         {pr.repoFullName} • {pr.branchName} → {pr.baseBranch}
                       </p>
-                      <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-4 flex-wrap gap-2">
                         <span className={`px-3 py-1 text-xs rounded-full font-semibold ${getStatusColor(pr.status)}`}>
                           {pr.status}
                         </span>
@@ -190,6 +190,50 @@ export default function PullRequests() {
                           })}
                         </span>
                       </div>
+                      
+                      {/* Enhanced PR Metadata */}
+                      {pr.metadata && (
+                        <div className="mt-3 space-y-2">
+                          {/* Labels */}
+                          {pr.metadata.labels && pr.metadata.labels.length > 0 && (
+                            <div className="flex items-center space-x-2 flex-wrap gap-1">
+                              <Tag size={14} className="text-gray-500 dark:text-gray-400" />
+                              {pr.metadata.labels.map((label: string, idx: number) => (
+                                <span
+                                  key={idx}
+                                  className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                                    label === 'bug' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
+                                    label === 'enhancement' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                                    label === 'security' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' :
+                                    label === 'performance' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                                    label === 'ui' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' :
+                                    label === 'documentation' ? 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400' :
+                                    'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
+                                  }`}
+                                >
+                                  {label}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          
+                          {/* Breaking Changes Warning */}
+                          {pr.metadata.hasBreakingChanges && (
+                            <div className="flex items-center space-x-2 text-xs text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 px-3 py-2 rounded-md border border-orange-200 dark:border-orange-900/50">
+                              <AlertTriangle size={16} />
+                              <span className="font-medium">Contains Breaking Changes</span>
+                            </div>
+                          )}
+                          
+                          {/* Repository Guidelines Badge */}
+                          {pr.metadata.generatedWithGuidelines && (
+                            <div className="flex items-center space-x-1 text-xs text-green-600 dark:text-green-400">
+                              <CheckCircle size={14} />
+                              <span>Follows repository guidelines</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
                       {pr.htmlUrl && (
                         <div className="mt-3">
                           <a
