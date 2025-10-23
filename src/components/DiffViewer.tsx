@@ -114,7 +114,7 @@ export default function DiffViewer({ filename, oldContent, newContent, action }:
       >
         <div className="flex items-center space-x-2">
           {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
-          <span className="font-mono text-sm font-semibold">{filename}</span>
+          <span className="font-mono text-sm font-semibold text-gray-900">{filename}</span>
           <span className="text-xs text-gray-600">
             {stats.added > 0 && <span className="text-green-700">+{stats.added} </span>}
             {stats.removed > 0 && <span className="text-red-700">-{stats.removed} </span>}
