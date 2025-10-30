@@ -13,7 +13,8 @@ import {
   Command,
   ChevronDown,
   Bell,
-  CreditCard
+  CreditCard,
+  Shield
 } from 'lucide-react'
 import darkLogo from '../assets/logo_dark.png'
 import lightLogo from '../assets/logo_light.png'
@@ -30,6 +31,9 @@ export default function Layout({ children }: LayoutProps) {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
 
+  // Check if user is admin
+  const isAdmin = user?.email && import.meta.env.VITE_ADMIN_EMAILS?.split(',').map((e: string) => e.trim().toLowerCase()).includes(user.email.toLowerCase())
+
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
     { name: 'Repositories', href: '/repositories', icon: GitBranch },
@@ -37,6 +41,7 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Contribute', href: '/contribute', icon: GitFork },
     { name: 'Validations', href: '/validations', icon: CheckCircle },
     { name: 'Pull Requests', href: '/pull-requests', icon: GitPullRequest },
+    ...(isAdmin ? [{ name: 'Admin', href: '/admin', icon: Shield }] : []),
   ]
 
   return (

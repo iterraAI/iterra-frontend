@@ -2,10 +2,17 @@ import { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useAuthStore } from './store/authStore'
 import Layout from './components/Layout'
+import AccessCodeGuard from './components/AccessCodeGuard'
+import AdminGuard from './components/AdminGuard'
 import LandingPage from './pages/LandingPage'
+import Waitlist from './pages/Waitlist'
+import SharePage from './pages/SharePage'
+import ThankYou from './pages/ThankYou'
+import VerifyCode from './pages/VerifyCode'
 import Auth from './pages/Auth'
 import AuthCallback from './pages/AuthCallback'
 import Dashboard from './pages/Dashboard'
+import AdminDashboard from './pages/AdminDashboard'
 import Repositories from './pages/Repositories'
 import Issues from './pages/Issues'
 import IssueSolver from './pages/IssueSolver'
@@ -27,19 +34,33 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        {/* Public routes (no access code required) */}
+        <Route path="/waitlist" element={<Waitlist />} />
+        <Route path="/share" element={<SharePage />} />
+        <Route path="/thank-you" element={<ThankYou />} />
+        <Route path="/verify-code" element={<VerifyCode />} />
+        <Route path="/pricing" element={<Pricing />} />
+        
+        {/* Auth routes - NO access guard (so users can log in first) */}
         <Route path="/auth" element={<Auth />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
-        <Route path="/repositories" element={<ProtectedRoute><Layout><Repositories /></Layout></ProtectedRoute>} />
-        <Route path="/issues" element={<ProtectedRoute><Layout><Issues /></Layout></ProtectedRoute>} />
-        <Route path="/issues/:issueId/solve" element={<ProtectedRoute><Layout><IssueSolver /></Layout></ProtectedRoute>} />
-        <Route path="/validations" element={<ProtectedRoute><Layout><Validations /></Layout></ProtectedRoute>} />
-        <Route path="/validations/:solutionId" element={<ProtectedRoute><Layout><ValidationDetail /></Layout></ProtectedRoute>} />
-        <Route path="/pull-requests" element={<ProtectedRoute><Layout><PullRequests /></Layout></ProtectedRoute>} />
-        <Route path="/contribute" element={<ProtectedRoute><Layout><Contribute /></Layout></ProtectedRoute>} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/profile-settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
+        
+        {/* Landing page - wrapped with access guard (will redirect to waitlist if no access) */}
+        <Route path="/" element={<AccessCodeGuard><LandingPage /></AccessCodeGuard>} />
+        
+        {/* Admin routes - require admin access */}
+        <Route path="/admin" element={<AccessCodeGuard><AdminGuard><Layout><AdminDashboard /></Layout></AdminGuard></AccessCodeGuard>} />
+        
+        {/* Protected routes - require both access code AND authentication */}
+        <Route path="/dashboard" element={<AccessCodeGuard><ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute></AccessCodeGuard>} />
+        <Route path="/repositories" element={<AccessCodeGuard><ProtectedRoute><Layout><Repositories /></Layout></ProtectedRoute></AccessCodeGuard>} />
+        <Route path="/issues" element={<AccessCodeGuard><ProtectedRoute><Layout><Issues /></Layout></ProtectedRoute></AccessCodeGuard>} />
+        <Route path="/issues/:issueId/solve" element={<AccessCodeGuard><ProtectedRoute><Layout><IssueSolver /></Layout></ProtectedRoute></AccessCodeGuard>} />
+        <Route path="/validations" element={<AccessCodeGuard><ProtectedRoute><Layout><Validations /></Layout></ProtectedRoute></AccessCodeGuard>} />
+        <Route path="/validations/:solutionId" element={<AccessCodeGuard><ProtectedRoute><Layout><ValidationDetail /></Layout></ProtectedRoute></AccessCodeGuard>} />
+        <Route path="/pull-requests" element={<AccessCodeGuard><ProtectedRoute><Layout><PullRequests /></Layout></ProtectedRoute></AccessCodeGuard>} />
+        <Route path="/contribute" element={<AccessCodeGuard><ProtectedRoute><Layout><Contribute /></Layout></ProtectedRoute></AccessCodeGuard>} />
+        <Route path="/profile-settings" element={<AccessCodeGuard><ProtectedRoute><ProfileSettings /></ProtectedRoute></AccessCodeGuard>} />
       </Routes>
     </Router>
   )
