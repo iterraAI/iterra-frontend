@@ -8,6 +8,7 @@ import DetailedProgressTracker, { ENHANCED_AI_STEPS, ProgressStep } from '../com
 import DiffViewer from '../components/DiffViewer'
 import Loader from '../components/Loader'
 import UpgradePrompt from '../components/UpgradePrompt'
+import MarkdownRenderer from '../components/MarkdownRenderer'
 import { authenticatedGet } from '../utils/api'
 
 export default function IssueSolver() {
@@ -237,9 +238,10 @@ export default function IssueSolver() {
               </div>
               <p className="text-gray-600 dark:text-gray-300 mb-4">{issueData?.repoFullName}</p>
               <div className="bg-gray-50 dark:bg-[var(--card-bg)] border dark:border-[var(--border-primary)] p-4 rounded-lg">
-                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                  {issueData?.body || 'No description provided'}
-                </p>
+                <MarkdownRenderer 
+                  content={issueData?.body || 'No description provided'} 
+                  className="text-gray-700 dark:text-gray-300"
+                />
               </div>
               {issueData?.labels?.length > 0 && (
                 <div className="flex items-center space-x-2 mt-4">

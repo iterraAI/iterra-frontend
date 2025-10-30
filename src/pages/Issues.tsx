@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { AlertCircle, Sparkles, ExternalLink, RefreshCw, CheckCircle2, XCircle, Loader as LoaderIcon } from 'lucide-react'
 import Loader from '../components/Loader'
+import MarkdownRenderer from '../components/MarkdownRenderer'
 import { authenticatedGet } from '../utils/api'
 
 type TabType = 'all' | 'open' | 'closed'
@@ -195,9 +196,12 @@ export default function Issues() {
                         <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100">{issue.title}</h3>
                         <span className="text-gray-500 dark:text-gray-400 text-sm">#{issue.issueNumber}</span>
                       </div>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2">
-                        {issue.body || 'No description provided'}
-                      </p>
+                      <div className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-2">
+                        <MarkdownRenderer 
+                          content={issue.body || 'No description provided'} 
+                          className="text-sm"
+                        />
+                      </div>
                       <div className="flex items-center flex-wrap gap-2">
                         <span className="text-xs text-gray-500 dark:text-gray-400">{issue.repoFullName}</span>
                         {issue.labels?.map((label: string) => (

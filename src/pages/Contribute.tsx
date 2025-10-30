@@ -6,6 +6,7 @@ import { authenticatedPost } from '../utils/api'
 import toast from 'react-hot-toast'
 import { ExternalLink, GitFork, AlertCircle, CheckCircle2, Loader as LoaderIcon, Sparkles } from 'lucide-react'
 import Loader from '../components/Loader'
+import MarkdownRenderer from '../components/MarkdownRenderer'
 
 interface ParsedUrl {
   owner: string
@@ -265,9 +266,10 @@ export default function Contribute() {
             </div>
 
             <div className="prose max-w-none">
-              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                {issuePreview.issue.body || 'No description provided'}
-              </p>
+              <MarkdownRenderer 
+                content={issuePreview.issue.body || 'No description provided'} 
+                className="text-gray-700 dark:text-gray-300"
+              />
             </div>
           </div>
 

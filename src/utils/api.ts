@@ -19,7 +19,8 @@ export const createAuthenticatedRequest = () => {
     baseURL: apiUrl,
     headers: {
       'Authorization': token ? `Bearer ${token}` : undefined
-    }
+    },
+    withCredentials: true // For sessions
   })
 }
 
@@ -35,7 +36,8 @@ export const authenticatedGet = async (endpoint: string) => {
   const response = await axios.get(`${apiUrl}${endpoint}`, {
     headers: {
       'Authorization': token ? `Bearer ${token}` : undefined
-    }
+    },
+    withCredentials: true
   })
   
   return response
@@ -49,7 +51,8 @@ export const authenticatedPost = async (endpoint: string, data?: any) => {
   const response = await axios.post(`${apiUrl}${endpoint}`, data, {
     headers: {
       'Authorization': token ? `Bearer ${token}` : undefined
-    }
+    },
+    withCredentials: true
   })
   
   return response
@@ -63,7 +66,8 @@ export const authenticatedPut = async (endpoint: string, data?: any) => {
   const response = await axios.put(`${apiUrl}${endpoint}`, data, {
     headers: {
       'Authorization': token ? `Bearer ${token}` : undefined
-    }
+    },
+    withCredentials: true
   })
   
   return response
@@ -77,8 +81,112 @@ export const authenticatedDelete = async (endpoint: string) => {
   const response = await axios.delete(`${apiUrl}${endpoint}`, {
     headers: {
       'Authorization': token ? `Bearer ${token}` : undefined
-    }
+    },
+    withCredentials: true
   })
   
   return response
+}
+
+// Waitlist API functions
+export const waitlistAPI = {
+  submit: async (data: { 
+    name?: string
+    email: string
+    githubId: string
+    githubUsername?: string
+    twitterHandle?: string
+    linkedinUrl?: string
+    motivation?: string
+  }) => {
+    const apiUrl = getApiUrl()
+    return axios.post(`${apiUrl}/api/waitlist/submit`, data, {
+      withCredentials: true
+    })
+  },
+
+  updateSharing: async (data: {
+    email: string
+    sharedOnX: boolean
+    sharedOnLinkedIn: boolean
+  }) => {
+    const apiUrl = getApiUrl()
+    return axios.post(`${apiUrl}/api/waitlist/update-sharing`, data, {
+      withCredentials: true
+    })
+  },
+
+  verifyCode: async (data: {
+    email: string
+    accessCode: string
+  }) => {
+    const apiUrl = getApiUrl()
+    return axios.post(`${apiUrl}/api/waitlist/verify-code`, data, {
+      withCredentials: true
+    })
+  },
+
+  checkStatus: async () => {
+    const apiUrl = getApiUrl()
+    const token = getToken()
+    return axios.get(`${apiUrl}/api/waitlist/status`, {
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : undefined
+      },
+      withCredentials: true
+    })
+  }
+}
+
+// Admin API functions
+export const adminAPI = {
+  getWaitlistEntries: async () => {
+    const apiUrl = getApiUrl()
+    const token = getToken()
+    return axios.get(`${apiUrl}/api/admin/waitlist`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+  },
+
+  getWaitlistEntry: async (id: string) => {
+    const apiUrl = getApiUrl()
+    const token = getToken()
+    return axios.get(`${apiUrl}/api/admin/waitlist/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+  },
+
+  approveEntry: async (id: string) => {
+    const apiUrl = getApiUrl()
+    const token = getToken()
+    return axios.post(`${apiUrl}/api/admin/waitlist/${id}/approve`, {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+  },
+
+  rejectEntry: async (id: string) => {
+    const apiUrl = getApiUrl()
+    const token = getToken()
+    return axios.post(`${apiUrl}/api/admin/waitlist/${id}/reject`, {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+  },
+
+  generateNewCode: async (id: string) => {
+    const apiUrl = getApiUrl()
+    const token = getToken()
+    return axios.post(`${apiUrl}/api/admin/waitlist/${id}/generate-code`, {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+  }
 }
