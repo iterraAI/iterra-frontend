@@ -49,38 +49,32 @@ export default function LandingPage() {
     <div className="min-h-screen">
       {/* Navigation */}
       <nav className="bg-transparent backdrop-blur-lg sticky top-0 z-50 shadow-sm">
-        <div className=" pr-4">
+        <div className="pr-4">
           <div className="flex items-center justify-between h-16">
-              {/* <div className="flex items-center space-x-8"> */}
-              <div className="flex items-center space-x-2">
-                {/* Show dark logo in light mode, light logo in dark mode */}
-                <img src={lightLogo} alt="Kodin" className='h-12 w-42 dark:hidden' />
-                <img src={darkLogo} alt="Kodin" className='h-12 w-42 hidden dark:block' />
-              </div>
+            <div className="flex items-center space-x-2">
+              {/* Show dark logo in light mode, light logo in dark mode */}
+              <img src={lightLogo} alt="Kodin" className='h-12 w-42 dark:hidden' />
+              <img src={darkLogo} alt="Kodin" className='h-12 w-42 hidden dark:block' />
+            </div>
 
-              {/* Nav Links */}
-              <div className="hidden md:flex items-center space-x-8">
-                <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
-                  Features
-                </a>
-                <a href="#how-it-works" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
-                  How It Works
-                </a>
-                <a href="#benefits" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
-                  Benefits
-                </a>
-                <Link to="/pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
-                  Pricing
-                </Link>
-              </div>
-            {/* </div> */}
-            {/* Logo */}
+            {/* Nav Links */}
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
+                Features
+              </a>
+              <a href="#how-it-works" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
+                How It Works
+              </a>
+              <a href="#benefits" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
+                Benefits
+              </a>
+              <Link to="/pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors">
+                Pricing
+              </Link>
+            </div>
 
             {/* CTA Buttons */}
             <div className="flex items-center space-x-3">
-              {/* <Link to="/auth" className="btn btn-outline">
-                Sign In
-              </Link> */}
               <Link to="/auth" className="btn btn-primary">
                 Get Started
                 <ArrowRight size={18} />
@@ -482,8 +476,8 @@ export default function LandingPage() {
                   <Sparkles className="text-white" size={24} />
                 </div>
                 <span className="text-xl font-bold">Kodin</span> */}
-                <img src={darkLogo} alt="Kodin" className='h-12 w-42 dark:hidden' />
-                <img src={lightLogo} alt="Kodin" className='h-12 w-42 hidden dark:block' />
+                <img src={lightLogo} alt="Kodin" className='h-12 w-42 dark:hidden' />
+                <img src={darkLogo} alt="Kodin" className='h-12 w-42 hidden dark:block' />
               </div>
               <p className="text-gray-600 text-sm">
                 Your AI pair programmer for debugging issues.
