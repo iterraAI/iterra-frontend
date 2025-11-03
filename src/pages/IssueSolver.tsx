@@ -216,8 +216,8 @@ export default function IssueSolver() {
     const model = modelsData?.allModels?.find((m: any) => m.id === modelId)
     const userPlan = subscriptionData?.subscription?.plan || 'FREE'
     
-    // Check if user has access to this model
-    if (model && model.provider !== 'groq' && userPlan === 'FREE') {
+    // Check if user has access to this model (FREE plan only has access to GPT-5 Mini)
+    if (model && userPlan === 'FREE' && model.id !== 'gpt-5-mini') {
       setUpgradeReason('model_access')
       setShowUpgradePrompt(true)
       return
@@ -293,7 +293,8 @@ export default function IssueSolver() {
                 <div className="absolute bottom-full left-0 mb-2 w-80 bg-white dark:bg-[var(--card-bg)] border border-gray-200 dark:border-[var(--border-primary)] rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto">
                   {modelsData?.allModels?.map((model: any) => {
                     const userPlan = subscriptionData?.subscription?.plan || 'FREE'
-                    const requiresUpgrade = model.provider !== 'groq' && userPlan === 'FREE'
+                    // GPT-5 Mini is available for FREE plan, all other models require PRO subscription
+                    const requiresUpgrade = userPlan === 'FREE' && model.id !== 'gpt-5-mini'
                     const isSelected = selectedModel === model.id
                     const estimatedCredits = model.estimatedCredits
                     const currentCredits = subscriptionData?.subscription?.credits?.balance || modelsData?.currentCredits || 0
@@ -362,13 +363,21 @@ export default function IssueSolver() {
                 const subscriptionCredits = subscriptionData?.subscription?.credits
                 const creditsBalance = subscriptionCredits?.balance ?? modelsData?.currentCredits ?? null
                 const creditsAllocated = subscriptionCredits?.allocated ?? modelsData?.creditsAllocated ?? 0
+                const creditsUsed = subscriptionCredits?.used ?? 0
                 
                 // Display logic:
-                // - If balance is explicitly provided (including 0), show it
-                // - If balance is null (not initialized) and we have allocated, show allocated as fallback
-                const displayCredits = creditsBalance !== null && creditsBalance !== undefined
-                  ? creditsBalance 
-                  : creditsAllocated
+                // - If balance is null (not initialized), show allocated
+                // - If balance is 0 AND user hasn't used any credits (used = 0), show allocated (fresh user)
+                // - Otherwise, show actual balance
+                let displayCredits = creditsAllocated
+                if (creditsBalance !== null && creditsBalance !== undefined) {
+                  // If balance is 0 but user hasn't used any credits, they should see allocated
+                  if (creditsBalance === 0 && creditsUsed === 0 && creditsAllocated > 0) {
+                    displayCredits = creditsAllocated
+                  } else {
+                    displayCredits = creditsBalance
+                  }
+                }
                 
                 return (
                   <div className="text-sm text-gray-600 dark:text-gray-400">
