@@ -7,29 +7,51 @@ import {
   CreditCard, 
   Settings, 
   ArrowRight,
-  CheckCircle,
-  Clock,
-  Zap,
-  Crown,
-  Star
+  CheckCircle
 } from 'lucide-react'
 import { authenticatedGet } from '../utils/api'
 import { useAuthStore } from '../store/authStore'
 import Loader from '../components/Loader'
 import ThemeSwitcher from '../components/ThemeSwitcher'
-import logo from '../assets/logo_new.png'
+import darkLogo from '../assets/logo_dark.png'
+import lightLogo from '../assets/logo_light.png'
 
+
+interface UsageHistoryItem {
+  id: string
+  date: string
+  model: string
+  repository: string
+  credits: number
+}
+
+interface UsageHistoryPagination {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+}
 
 interface UsageStats {
   totalSolutions: number
   monthlySolutions: number
   monthlyLimit: number
+  credits?: {
+    balance: number
+    allocated: number
+    used: number
+    usagePercentage: number
+  }
+  usageHistory?: UsageHistoryItem[]
+  pagination?: UsageHistoryPagination
   lastResetDate: string
 }
 
 export default function ProfileSettings() {
   const { user } = useAuthStore()
   const [activeTab, setActiveTab] = useState<'overview' | 'usage' | 'billing' | 'settings'>('overview')
+  const [usageFilterDays, setUsageFilterDays] = useState<number | null>(7) // Default to 7 days
+  const [usagePage, setUsagePage] = useState(1)
 
   // Fetch subscription data (use same query key as SubscriptionStatus component)
   const { data: subscriptionData, isLoading: subscriptionLoading } = useQuery({
@@ -57,12 +79,17 @@ export default function ProfileSettings() {
     enabled: !!user
   })
 
-  // Fetch usage stats
+  // Fetch usage stats with pagination and filtering
   const { data: usageStats, isLoading: usageLoading } = useQuery<UsageStats>({
-    queryKey: ['usage-stats'],
+    queryKey: ['usage-stats', usageFilterDays, usagePage],
     queryFn: async () => {
       try {
-        const res = await authenticatedGet('/api/payments/usage/stats')
+        const params = new URLSearchParams()
+        if (usageFilterDays) params.append('days', usageFilterDays.toString())
+        params.append('page', usagePage.toString())
+        params.append('limit', '100')
+        
+        const res = await authenticatedGet(`/api/payments/usage/stats?${params.toString()}`)
         return res.data
       } catch (error) {
         console.error('Failed to fetch usage stats:', error)
@@ -86,19 +113,6 @@ export default function ProfileSettings() {
     { id: 'billing', name: 'Billing', icon: CreditCard },
     { id: 'settings', name: 'Settings', icon: Settings }
   ] as const
-
-  const getPlanIcon = (plan: string) => {
-    switch (plan) {
-      case 'FREE':
-        return <Star className="text-gray-500" size={20} />
-      case 'PRO':
-        return <Zap className="text-blue-500" size={20} />
-      case 'ENTERPRISE':
-        return <Crown className="text-purple-500" size={20} />
-      default:
-        return <Star className="text-gray-500" size={20} />
-    }
-  }
 
   const getPlanBadge = (plan: string) => {
     switch (plan) {
@@ -125,7 +139,8 @@ export default function ProfileSettings() {
         <div className="pl-4 pr-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-2">
-              <img src={logo} alt="Kodin" className='h-12 w-42' />
+              <img src={lightLogo} alt="Kodin" className='h-12 w-42 dark:hidden' />
+              <img src={darkLogo} alt="Kodin" className='h-12 w-42 hidden dark:block' />
             </div>
 
             <div className="flex items-center space-x-3">
@@ -143,37 +158,41 @@ export default function ProfileSettings() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-[var(--bg-secondary)] rounded-2xl shadow-lg p-6 sticky top-24">
-              {/* User Info */}
-              <div className="text-center mb-6">
-                <img
-                  src={user?.avatarUrl}
-                  alt={user?.username}
-                  className="w-16 h-16 rounded-full mx-auto mb-3 border-4 border-green-500"
-                />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{user?.username}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
-                <div className="mt-2">
+            <div className="sticky top-24">
+              {/* User Info - Minimal */}
+              <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3 mb-3">
+                  <img
+                    src={user?.avatarUrl}
+                    alt={user?.username}
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{user?.username}</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.email}</p>
+                  </div>
+                </div>
+                <div>
                   {getPlanBadge(subscriptionData?.subscription?.plan || 'FREE')}
                 </div>
               </div>
 
-              {/* Navigation Tabs */}
-              <nav className="space-y-2">
+              {/* Navigation Tabs - Minimal */}
+              <nav className="space-y-1">
                 {tabs.map((tab) => {
                   const Icon = tab.icon
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors ${
                         activeTab === tab.id
-                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800'
-                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                          ? 'text-green-600 dark:text-green-400 font-medium'
+                          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
                       }`}
                     >
-                      <Icon size={18} />
-                      <span className="font-medium">{tab.name}</span>
+                      <Icon size={16} />
+                      <span>{tab.name}</span>
                     </button>
                   )
                 })}
@@ -181,71 +200,82 @@ export default function ProfileSettings() {
             </div>
           </div>
 
-          {/* Main Content */}
+          {/* Main Content - Minimal */}
           <div className="lg:col-span-3">
-            <div className="bg-white dark:bg-[var(--bg-secondary)] rounded-2xl shadow-lg p-8">
+            <div>
               {/* Overview Tab */}
               {activeTab === 'overview' && (
                 <div className="space-y-8">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Account Overview</h2>
-                    <p className="text-gray-600 dark:text-gray-300">Manage your account and subscription details</p>
-                  </div>
-
                   {/* Current Plan */}
-                  <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+                  <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        {getPlanIcon(subscriptionData?.subscription?.plan || 'FREE')}
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                            {subscriptionData?.subscription?.plan || 'FREE'} Plan
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
+                            {subscriptionData?.subscription?.plan || 'FREE'}
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
-                            Status: <span className="capitalize">{subscriptionData?.subscription?.status || 'active'}</span>
-                          </p>
+                          <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                            {subscriptionData?.subscription?.status || 'active'}
+                          </span>
                         </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {subscriptionData?.subscription?.plan === 'PRO' ? '$20/month' : 
+                           subscriptionData?.subscription?.plan === 'PRO_PLUS' ? '$50/month' :
+                           subscriptionData?.subscription?.plan === 'TEAMS' ? '$150/month' :
+                           subscriptionData?.subscription?.plan === 'ENTERPRISE' ? 'Custom pricing' :
+                           'Free'}
+                        </p>
                       </div>
-                      <Link to="/pricing" className="btn btn-primary">
-                        Upgrade Plan
-                      </Link>
+                      {subscriptionData?.subscription?.plan !== 'ENTERPRISE' && (
+                        <Link to="/pricing" className="text-sm text-green-600 dark:text-green-400 hover:underline">
+                          Change plan
+                        </Link>
+                      )}
                     </div>
                   </div>
 
-                  {/* Quick Stats */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                      <div className="flex items-center gap-3 mb-2">
-                        <BarChart3 className="text-blue-500" size={20} />
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">Monthly Usage</h4>
+                  {/* Credits */}
+                  <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <div className="mb-3">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Credits</p>
+                      <p className="text-2xl font-medium text-gray-900 dark:text-gray-100">
+                        {subscriptionData?.subscription?.credits?.balance?.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) || '0.0'}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        of {subscriptionData?.subscription?.credits?.allocated?.toLocaleString() || '0'} allocated
+                      </p>
+                    </div>
+                    {subscriptionData?.subscription?.credits?.allocated > 0 && (
+                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
+                        <div 
+                          className="bg-green-500 h-1 rounded-full transition-all"
+                          style={{ 
+                            width: `${100 - ((subscriptionData?.subscription?.credits?.balance || 0) / (subscriptionData?.subscription?.credits?.allocated || 1) * 100)}%` 
+                          }}
+                        ></div>
                       </div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    )}
+                  </div>
+
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-3 gap-6">
+                    <div>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Total Solutions</p>
+                      <p className="text-xl font-medium text-gray-900 dark:text-gray-100">
+                        {usageStats?.totalSolutions || 0}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">This Month</p>
+                      <p className="text-xl font-medium text-gray-900 dark:text-gray-100">
                         {usageStats?.monthlySolutions || 0}
                       </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">
-                        of {subscriptionData?.subscription?.plan === 'ENTERPRISE' ? '∞' : 
-                            subscriptionData?.subscription?.plan === 'PRO' ? '100' : '10'} solutions
-                      </p>
                     </div>
-
-                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                      <div className="flex items-center gap-3 mb-2">
-                        <CheckCircle className="text-green-500" size={20} />
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">Success Rate</h4>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">87%</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Average success rate</p>
-                    </div>
-
-                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                      <div className="flex items-center gap-3 mb-2">
-                        <Clock className="text-purple-500" size={20} />
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">Member Since</h4>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                        {new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                    <div>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Credits Used</p>
+                      <p className="text-xl font-medium text-gray-900 dark:text-gray-100">
+                        {(subscriptionData?.subscription?.credits?.used || usageStats?.credits?.used || 0).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                       </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Account created</p>
                     </div>
                   </div>
                 </div>
@@ -254,58 +284,216 @@ export default function ProfileSettings() {
               {/* Usage Tab */}
               {activeTab === 'usage' && (
                 <div className="space-y-8">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Usage Statistics</h2>
-                    <p className="text-gray-600 dark:text-gray-300">Track your AI solution usage and limits</p>
+                  {/* Credits Usage */}
+                  <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Credits</p>
+                        <p className="text-xl font-medium text-gray-900 dark:text-gray-100">
+                          {(subscriptionData?.subscription?.credits?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} / {subscriptionData?.subscription?.credits?.allocated?.toLocaleString() || 0}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Used</p>
+                        <p className="text-xl font-medium text-gray-900 dark:text-gray-100">
+                          {(subscriptionData?.subscription?.credits?.used || usageStats?.credits?.used || 0).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                        </p>
+                      </div>
+                    </div>
+                    {subscriptionData?.subscription?.credits?.allocated > 0 && (
+                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
+                        <div 
+                          className="bg-green-500 h-1 rounded-full transition-all"
+                          style={{ 
+                            width: `${Math.min(((subscriptionData?.subscription?.credits?.used || 0) / (subscriptionData?.subscription?.credits?.allocated || 1)) * 100, 100)}%` 
+                          }}
+                        ></div>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Usage Overview */}
-                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Current Month Usage</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Solutions Used</span>
-                          <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {usageStats?.monthlySolutions || 0} / {usageStats?.monthlyLimit === -1 ? '∞' : usageStats?.monthlyLimit || 10}
-                          </span>
-                        </div>
-                        <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
-                          <div 
-                            className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-300"
-                            style={{ 
-                              width: usageStats?.monthlyLimit === -1 ? '0%' : 
-                                `${Math.min(((usageStats?.monthlySolutions || 0) / (usageStats?.monthlyLimit || 10)) * 100, 100)}%` 
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-4 pt-4">
-                        <div className="text-center">
-                          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                            {usageStats?.totalSolutions || 0}
-                          </p>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">Total Solutions</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                            {usageStats?.monthlySolutions || 0}
-                          </p>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">This Month</p>
-                        </div>
-                      </div>
+                  {/* Solutions Stats */}
+                  <div className="grid grid-cols-2 gap-6 border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <div>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Total Solutions</p>
+                      <p className="text-xl font-medium text-gray-900 dark:text-gray-100">
+                        {usageStats?.totalSolutions || 0}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">This Month</p>
+                      <p className="text-xl font-medium text-gray-900 dark:text-gray-100">
+                        {usageStats?.monthlySolutions || 0}
+                      </p>
                     </div>
                   </div>
 
-                  {/* Usage Tips */}
-                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">💡 Usage Tips</h3>
-                    <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                      <li>• Use specific and detailed issue descriptions for better AI solutions</li>
-                      <li>• Review and validate solutions before implementing them</li>
-                      <li>• Upgrade to Pro or Enterprise for higher usage limits</li>
-                    </ul>
+                  {/* Reset Date */}
+                  <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Reset Date</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {subscriptionData?.subscription?.currentPeriodEnd ? 
+                        new Date(subscriptionData.subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
+                          month: 'long', 
+                          day: 'numeric',
+                          year: 'numeric'
+                        }) : 
+                        'N/A'}
+                    </p>
+                  </div>
+
+                  {/* Usage History - Table Style */}
+                  <div>
+                    {/* Filters */}
+                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            setUsageFilterDays(1)
+                            setUsagePage(1)
+                          }}
+                          className={`px-3 py-1 text-xs rounded transition-colors ${
+                            usageFilterDays === 1
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-medium'
+                              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                          }`}
+                        >
+                          1d
+                        </button>
+                        <button
+                          onClick={() => {
+                            setUsageFilterDays(7)
+                            setUsagePage(1)
+                          }}
+                          className={`px-3 py-1 text-xs rounded transition-colors ${
+                            usageFilterDays === 7
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-medium'
+                              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                          }`}
+                        >
+                          7d
+                        </button>
+                        <button
+                          onClick={() => {
+                            setUsageFilterDays(30)
+                            setUsagePage(1)
+                          }}
+                          className={`px-3 py-1 text-xs rounded transition-colors ${
+                            usageFilterDays === 30
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-medium'
+                              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                          }`}
+                        >
+                          30d
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Table */}
+                    {usageStats?.usageHistory && usageStats.usageHistory.length > 0 ? (
+                      <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                        <table className="w-full">
+                          <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                Date
+                              </th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                Model
+                              </th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                Repository
+                              </th>
+                              <th className="px-4 py-3 text-right text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                Credits
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                            {usageStats.usageHistory.map((job) => (
+                              <tr 
+                                key={job.id}
+                                className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors"
+                              >
+                                <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
+                                  {(() => {
+                                    const date = new Date(job.date)
+                                    const month = date.toLocaleDateString('en-US', { month: 'short' })
+                                    const day = date.getDate()
+                                    const time = date.toLocaleTimeString('en-US', { 
+                                      hour: '2-digit', 
+                                      minute: '2-digit',
+                                      hour12: true 
+                                    })
+                                    return `${month} ${day}, ${time}`
+                                  })()}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
+                                  {job.model}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
+                                  {job.repository}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-right font-medium text-gray-900 dark:text-gray-100">
+                                  {job.credits.toFixed(1)}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+
+                        {/* Pagination */}
+                        {usageStats.pagination && usageStats.pagination.totalPages > 1 && (
+                          <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between bg-gray-50 dark:bg-gray-800/50">
+                            <div className="text-xs text-gray-600 dark:text-gray-400">
+                              Showing {((usageStats.pagination.page - 1) * 100) + 1} - {Math.min(usageStats.pagination.page * 100, usageStats.pagination.total)} of {usageStats.pagination.total} events
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="text-xs text-gray-600 dark:text-gray-400">
+                                Rows per page: <span className="font-medium">100</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={() => setUsagePage(1)}
+                                  disabled={usageStats.pagination.page === 1}
+                                  className="px-2 py-1 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  ««
+                                </button>
+                                <button
+                                  onClick={() => setUsagePage(p => Math.max(1, p - 1))}
+                                  disabled={usageStats.pagination.page === 1}
+                                  className="px-2 py-1 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  «
+                                </button>
+                                <span className="px-3 py-1 text-xs text-gray-900 dark:text-gray-100">
+                                  Page {usageStats.pagination.page} of {usageStats.pagination.totalPages}
+                                </span>
+                                <button
+                                  onClick={() => setUsagePage(p => Math.min(usageStats.pagination!.totalPages, p + 1))}
+                                  disabled={usageStats.pagination.page === usageStats.pagination.totalPages}
+                                  className="px-2 py-1 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  »
+                                </button>
+                                <button
+                                  onClick={() => setUsagePage(usageStats.pagination!.totalPages)}
+                                  disabled={usageStats.pagination.page === usageStats.pagination.totalPages}
+                                  className="px-2 py-1 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  »»
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-8 text-center">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">No usage history yet</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -313,55 +501,52 @@ export default function ProfileSettings() {
               {/* Billing Tab */}
               {activeTab === 'billing' && (
                 <div className="space-y-8">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Billing & Subscription</h2>
-                    <p className="text-gray-600 dark:text-gray-300">Manage your subscription and payment details</p>
-                  </div>
-
                   {/* Current Subscription */}
-                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Current Subscription</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium text-gray-900 dark:text-gray-100">
-                            {subscriptionData?.subscription?.plan || 'FREE'} Plan
-                          </p>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
-                            Status: <span className="capitalize">{subscriptionData?.subscription?.status || 'active'}</span>
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-gray-900 dark:text-gray-100">
-                            ${subscriptionData?.subscription?.plan === 'PRO' ? '15' : subscriptionData?.subscription?.plan === 'ENTERPRISE' ? '50' : '0'}/month
-                          </p>
-                        </div>
+                  <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Plan</p>
+                        <p className="text-base font-medium text-gray-900 dark:text-gray-100">
+                          {subscriptionData?.subscription?.plan || 'FREE'}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          Status: <span className="capitalize">{subscriptionData?.subscription?.status || 'active'}</span>
+                        </p>
                       </div>
-                      
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-600">
-                        <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">Next billing date</p>
-                          <p className="font-medium text-gray-900 dark:text-gray-100">
-                            {subscriptionData?.subscription?.currentPeriodEnd ? 
-                              new Date(subscriptionData.subscription.currentPeriodEnd).toLocaleDateString() : 
-                              'N/A'
-                            }
-                          </p>
-                        </div>
-                        <Link to="/pricing" className="btn btn-primary">
-                          Change Plan
-                        </Link>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Price</p>
+                        <p className="text-base font-medium text-gray-900 dark:text-gray-100">
+                          ${subscriptionData?.subscription?.plan === 'PRO' ? '20' : 
+                           subscriptionData?.subscription?.plan === 'PRO_PLUS' ? '50' :
+                           subscriptionData?.subscription?.plan === 'TEAMS' ? '150' :
+                           subscriptionData?.subscription?.plan === 'ENTERPRISE' ? 'Custom' : '0'}/month
+                        </p>
                       </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
+                      <div>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Next billing date</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                          {subscriptionData?.subscription?.currentPeriodEnd ? 
+                            new Date(subscriptionData.subscription.currentPeriodEnd).toLocaleDateString() : 
+                            'N/A'
+                          }
+                        </p>
+                      </div>
+                      <Link to="/pricing" className="text-sm text-green-600 dark:text-green-400 hover:underline">
+                        Change Plan
+                      </Link>
                     </div>
                   </div>
 
                   {/* Payment Methods */}
-                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Payment Methods</h3>
-                    <div className="text-center py-8">
-                      <CreditCard className="mx-auto text-gray-400 mb-4" size={48} />
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">No payment methods on file</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-3 font-medium">Payment Methods</p>
+                    <div className="text-center py-6">
+                      <CreditCard className="mx-auto text-gray-400 mb-3" size={32} />
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">No payment methods on file</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         Payment methods will be added when you upgrade to a paid plan
                       </p>
                     </div>
@@ -372,69 +557,60 @@ export default function ProfileSettings() {
               {/* Settings Tab */}
               {activeTab === 'settings' && (
                 <div className="space-y-8">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Account Settings</h2>
-                    <p className="text-gray-600 dark:text-gray-300">Manage your account preferences and security</p>
-                  </div>
-
                   {/* Account Information */}
-                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Account Information</h3>
+                  <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-4 font-medium">Account Information</p>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1.5">
                           Username
                         </label>
                         <input
                           type="text"
                           value={user?.username || ''}
                           disabled
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
+                          className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded bg-transparent text-gray-900 dark:text-gray-100 text-sm"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1.5">
                           Email
                         </label>
                         <input
                           type="email"
                           value={user?.email || ''}
                           disabled
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
+                          className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded bg-transparent text-gray-900 dark:text-gray-100 text-sm"
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* Preferences */}
-                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Preferences</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium text-gray-900 dark:text-gray-100">Theme</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">Choose your preferred theme</p>
-                        </div>
-                        <ThemeSwitcher />
+                  <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-4 font-medium">Preferences</p>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-0.5">Theme</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Choose your preferred theme</p>
                       </div>
+                      <ThemeSwitcher />
                     </div>
                   </div>
 
                   {/* Security */}
-                  <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Security</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium text-gray-900 dark:text-gray-100">GitHub Authentication</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
-                            Connected via GitHub OAuth
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="text-green-500" size={20} />
-                          <span className="text-sm text-green-600 dark:text-green-400">Connected</span>
-                        </div>
+                  <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-4 font-medium">Security</p>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-0.5">GitHub Authentication</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Connected via GitHub OAuth
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="text-green-500" size={16} />
+                        <span className="text-xs text-green-600 dark:text-green-400">Connected</span>
                       </div>
                     </div>
                   </div>

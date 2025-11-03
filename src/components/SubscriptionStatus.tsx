@@ -8,7 +8,13 @@ interface SubscriptionData {
     status: string
     currentPeriodStart: string
     currentPeriodEnd: string
-    monthlyUsage: number
+    monthlyUsage?: number // Deprecated
+    credits?: {
+      balance: number
+      allocated: number
+      used: number
+      monthlyAllocated: number
+    }
   }
   recentPayments: Array<{
     id: string
@@ -39,8 +45,12 @@ export default function SubscriptionStatus({ className = '' }: SubscriptionStatu
         return <Zap className="text-blue-600" size={20} />
       case 'PRO':
         return <Star className="text-purple-600" size={20} />
-      case 'ENTERPRISE':
+      case 'PRO_PLUS':
+        return <Star className="text-indigo-600" size={20} />
+      case 'TEAMS':
         return <Crown className="text-yellow-600" size={20} />
+      case 'ENTERPRISE':
+        return <Crown className="text-orange-600" size={20} />
       default:
         return <Zap className="text-gray-600" size={20} />
     }
@@ -59,22 +69,26 @@ export default function SubscriptionStatus({ className = '' }: SubscriptionStatu
     }
   }
 
-  const getPlanLimit = (plan: string) => {
+  const getPlanCredits = (plan: string) => {
     switch (plan) {
       case 'FREE':
-        return 10
+        return 15
       case 'PRO':
-        return 100
+        return 200
+      case 'PRO_PLUS':
+        return 400
+      case 'TEAMS':
+        return 1000
       case 'ENTERPRISE':
-        return -1 // Unlimited
+        return 0 // Custom
       default:
         return 0
     }
   }
 
-  const getUsagePercentage = (usage: number, limit: number) => {
-    if (limit === -1) return 0
-    return Math.round((usage / limit) * 100)
+  const getUsagePercentage = (used: number, allocated: number) => {
+    if (allocated === 0 || allocated === -1) return 0
+    return Math.round((used / allocated) * 100)
   }
 
   const getUsageColor = (percentage: number) => {
@@ -95,8 +109,13 @@ export default function SubscriptionStatus({ className = '' }: SubscriptionStatu
   }
 
   const { subscription } = subscriptionData || {}
-  const limit = getPlanLimit(subscription?.plan || 'FREE')
-  const usagePercentage = getUsagePercentage(subscription?.monthlyUsage || 0, limit)
+  
+  // Get credits data (prefer new format, fallback to old)
+  const creditsAllocated = subscription?.credits?.allocated || getPlanCredits(subscription?.plan || 'FREE')
+  const creditsBalance = subscription?.credits?.balance ?? (creditsAllocated - (subscription?.monthlyUsage || 0))
+  const creditsUsed = subscription?.credits?.used || (creditsAllocated - creditsBalance)
+  
+  const usagePercentage = getUsagePercentage(creditsUsed, creditsAllocated)
   const usageColor = getUsageColor(usagePercentage)
 
   return (
@@ -116,29 +135,31 @@ export default function SubscriptionStatus({ className = '' }: SubscriptionStatu
         </div>
       </div>
 
-      {/* Usage Bar */}
+      {/* Credit Balance */}
       <div className="mb-3">
         <div className="flex justify-between text-sm mb-1">
-          <span className="text-gray-600 dark:text-gray-300">Monthly Usage</span>
+          <span className="text-gray-600 dark:text-gray-300">Credits</span>
           <span className="text-gray-900 dark:text-gray-100 font-medium">
-            {subscription?.monthlyUsage || 0} / {limit === -1 ? '∞' : limit}
+            {creditsBalance.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} / {creditsAllocated === 0 ? 'Custom' : creditsAllocated === -1 ? '∞' : creditsAllocated.toLocaleString()}
           </span>
         </div>
-        {limit !== -1 && (
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div
-              className={`h-2 rounded-full transition-all duration-300 ${
-                usagePercentage >= 90 ? 'bg-red-500' :
-                usagePercentage >= 80 ? 'bg-yellow-500' : 'bg-green-500'
-              }`}
-              style={{ width: `${Math.min(usagePercentage, 100)}%` }}
-            ></div>
-          </div>
-        )}
-        {limit !== -1 && usagePercentage >= 80 && (
-          <div className={`mt-2 text-xs px-2 py-1 rounded-full ${usageColor}`}>
-            {usagePercentage >= 90 ? '⚠️ Limit almost reached' : '💡 Consider upgrading'}
-          </div>
+        {creditsAllocated > 0 && (
+          <>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  usagePercentage >= 90 ? 'bg-red-500' :
+                  usagePercentage >= 80 ? 'bg-yellow-500' : 'bg-green-500'
+                }`}
+                style={{ width: `${Math.min(usagePercentage, 100)}%` }}
+              ></div>
+            </div>
+            {usagePercentage >= 80 && (
+              <div className={`mt-2 text-xs px-2 py-1 rounded-full ${usageColor}`}>
+                {usagePercentage >= 90 ? '⚠️ Credits running low' : '💡 Consider upgrading'}
+              </div>
+            )}
+          </>
         )}
       </div>
 

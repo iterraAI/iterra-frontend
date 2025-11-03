@@ -16,7 +16,7 @@ const upgradeReasons = {
     title: 'Premium AI Model Access Required',
     description: 'Access to premium AI models requires a Pro subscription.',
     features: [
-      'Access to all AI models (GPT-4o, Claude, Groq)',
+      'Access to all AI models (GPT-5, Claude)',
       '100 solutions per month',
       'Priority support',
       'Advanced validation features'

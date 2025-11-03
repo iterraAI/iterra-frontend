@@ -240,7 +240,7 @@ export default function PaymentModal({
                 <ul className="space-y-2">
                   <li className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
                     <CheckCircle className="text-green-500" size={16} />
-                    <span>Access to all AI models (GPT-4o, Claude, Groq)</span>
+                    <span>Access to all AI models (GPT-5, Claude)</span>
                   </li>
                   <li className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
                     <CheckCircle className="text-green-500" size={16} />

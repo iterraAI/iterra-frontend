@@ -14,7 +14,7 @@ import { authenticatedGet } from '../utils/api'
 export default function IssueSolver() {
   const { issueId } = useParams()
   const navigate = useNavigate()
-  const [selectedModel, setSelectedModel] = useState('llama-3.3-70b-versatile')
+  const [selectedModel, setSelectedModel] = useState('gpt-5-mini')
   const [solution, setSolution] = useState<any>(null)
   const [analysisStep, setAnalysisStep] = useState(0)
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
@@ -163,9 +163,20 @@ export default function IssueSolver() {
     },
     onSuccess: (data) => {
       const totalTime = Math.floor((Date.now() - startTime) / 1000)
-      toast.success(`Solution generated successfully! (${totalTime}s)`)
+      const creditsUsed = data.credits?.used || 0
+      const creditsRemaining = data.credits?.remaining || 0
+      
+      if (creditsUsed > 0) {
+        toast.success(`Solution generated! Used ${creditsUsed.toFixed(1)} credits (${creditsRemaining.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} remaining)`)
+      } else {
+        toast.success(`Solution generated successfully! (${totalTime}s)`)
+      }
+      
       setSolution(data.solution)
       // Don't auto-redirect - let user review first
+      
+      // Invalidate subscription query to refresh credit balance
+      // This will be handled automatically by React Query refetch
     },
     onError: (error: any) => {
       const errorData = error.response?.data
@@ -174,9 +185,10 @@ export default function IssueSolver() {
       if (errorData?.error === 'Premium subscription required') {
         setUpgradeReason('model_access')
         setShowUpgradePrompt(true)
-      } else if (errorData?.error === 'Usage limit exceeded') {
+      } else if (errorData?.error === 'Usage limit exceeded' || errorData?.error === 'Insufficient credits' || errorData?.error === 'No credits available') {
         setUpgradeReason('usage_limit')
         setShowUpgradePrompt(true)
+        toast.error(errorData?.message || 'Insufficient credits')
       } else {
         toast.error(errorData?.error || 'Failed to generate solution')
       }
@@ -280,6 +292,9 @@ export default function IssueSolver() {
                     const userPlan = subscriptionData?.subscription?.plan || 'FREE'
                     const requiresUpgrade = model.provider !== 'groq' && userPlan === 'FREE'
                     const isSelected = selectedModel === model.id
+                    const estimatedCredits = model.estimatedCredits
+                    const currentCredits = subscriptionData?.subscription?.credits?.balance || modelsData?.currentCredits || 0
+                    const hasEnoughCredits = !estimatedCredits || currentCredits >= estimatedCredits
 
                     return (
                       <div
@@ -291,6 +306,8 @@ export default function IssueSolver() {
                         className={`p-3 cursor-pointer transition-colors border-b border-gray-100 dark:border-[var(--border-primary)] last:border-b-0 ${
                           isSelected
                             ? 'bg-green-50 dark:bg-green-900/20'
+                            : !hasEnoughCredits && !requiresUpgrade
+                            ? 'bg-red-50 dark:bg-red-900/20 opacity-60'
                             : 'hover:bg-gray-50 dark:hover:bg-[#1e1f23]'
                         }`}
                       >
@@ -307,9 +324,19 @@ export default function IssueSolver() {
                             <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                               {model.description}
                             </p>
+                            {estimatedCredits && (
+                              <p className={`text-xs mt-1 ${hasEnoughCredits ? 'text-gray-600 dark:text-gray-400' : 'text-red-600 dark:text-red-400'}`}>
+                                ~{estimatedCredits} credits
+                              </p>
+                            )}
                             {requiresUpgrade && (
                               <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
                                 Pro subscription required
+                              </p>
+                            )}
+                            {!hasEnoughCredits && !requiresUpgrade && (
+                              <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                                Insufficient credits
                               </p>
                             )}
                           </div>
@@ -324,12 +351,43 @@ export default function IssueSolver() {
               )}
             </div>
 
-            {/* Generate Solution Button - Right */}
-            <button
-              onClick={() => generateMutation.mutate()}
-              disabled={generateMutation.isPending}
-              className="btn btn-primary flex items-center space-x-2 px-6 py-2.5"
-            >
+            {/* Credit Balance & Generate Button - Right */}
+            <div className="flex items-center space-x-4">
+              {(() => {
+                // Get current credits - prefer subscription endpoint, fallback to models endpoint
+                // The backend should always initialize credits, but handle edge case where it's not set yet
+                const subscriptionCredits = subscriptionData?.subscription?.credits
+                const creditsBalance = subscriptionCredits?.balance ?? modelsData?.currentCredits ?? null
+                const creditsAllocated = subscriptionCredits?.allocated ?? modelsData?.creditsAllocated ?? 0
+                
+                // Display logic:
+                // - If balance is explicitly provided (including 0), show it
+                // - If balance is null (not initialized) and we have allocated, show allocated as fallback
+                const displayCredits = creditsBalance !== null && creditsBalance !== undefined
+                  ? creditsBalance 
+                  : creditsAllocated
+                
+                return (
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                      {displayCredits.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                    </span>
+                    {' '}credits remaining
+                  </div>
+                )
+              })()}
+              <button
+                onClick={() => generateMutation.mutate()}
+                disabled={generateMutation.isPending || (() => {
+                  const model = modelsData?.allModels?.find((m: any) => m.id === selectedModel)
+                  const estimatedCredits = model?.estimatedCredits
+                  const currentCredits = subscriptionData?.subscription?.credits?.balance ?? 
+                                        modelsData?.currentCredits ?? 
+                                        0
+                  return estimatedCredits && estimatedCredits > 0 && currentCredits < estimatedCredits
+                })()}
+                className="btn btn-primary flex items-center space-x-2 px-6 py-2.5"
+              >
               {generateMutation.isPending ? (
                 <>
                   <LoaderIcon className="animate-spin" size={20} />
@@ -341,7 +399,8 @@ export default function IssueSolver() {
                   <span>Generate Solution</span>
                 </>
               )}
-            </button>
+              </button>
+            </div>
           </div>
         </div>
       )}
