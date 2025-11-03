@@ -32,6 +32,7 @@ interface OrderData {
     name: string
     price: number
   }
+  key_id?: string // Razorpay key ID (test or live)
 }
 
 export default function PaymentModal({ 
@@ -126,8 +127,18 @@ export default function PaymentModal({
 
     console.log('🛒 Opening Razorpay with order:', data.order.id)
 
+    // Get Razorpay key from order data (provided by backend) or environment variable
+    const razorpayKey = data.key_id || import.meta.env.VITE_RAZORPAY_KEY_ID
+    
+    if (!razorpayKey) {
+      console.error('❌ Razorpay key not found')
+      toast.error('Payment configuration error. Please contact support.')
+      setPaymentStep('error')
+      return
+    }
+    
     const options = {
-      key: 'rzp_test_RSfXcpF1F8PhXj', // Use the test key from your env
+      key: razorpayKey, // Use key from backend or environment variable
       amount: data.order.amount,
       currency: data.order.currency,
       name: 'Kodin',

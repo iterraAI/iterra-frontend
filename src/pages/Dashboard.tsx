@@ -38,8 +38,20 @@ export default function Dashboard() {
     refetchOnWindowFocus: false
   })
 
-  const isLoading = issuesLoading || prsLoading || validationsLoading
-  const hasError = issuesError || prsError || validationsError
+  // Fetch dashboard statistics including success rate
+  const { data: dashboardStats, isLoading: statsLoading, error: statsError } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: async () => {
+      const res = await authenticatedGet('/api/dashboard/stats')
+      return res.data
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3,
+    refetchOnWindowFocus: false
+  })
+
+  const isLoading = issuesLoading || prsLoading || validationsLoading || statsLoading
+  const hasError = issuesError || prsError || validationsError || statsError
 
   if (isLoading) {
     return <Loader variant="fullPage" text="Loading your dashboard..." />
@@ -90,7 +102,9 @@ export default function Dashboard() {
     },
     {
       name: 'Success Rate',
-      value: '87%',
+      value: dashboardStats?.stats?.successRate !== undefined 
+        ? `${dashboardStats.stats.successRate}%` 
+        : '0%',
       icon: TrendingUp,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
