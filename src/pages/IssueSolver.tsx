@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { Sparkles, Code, FileCode, AlertCircle, Loader as LoaderIcon, Crown, ChevronDown, CheckCircle } from 'lucide-react'
@@ -14,6 +14,7 @@ import { authenticatedGet } from '../utils/api'
 export default function IssueSolver() {
   const { issueId } = useParams()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [selectedModel, setSelectedModel] = useState('gpt-5-mini')
   const [solution, setSolution] = useState<any>(null)
   const [analysisStep, setAnalysisStep] = useState(0)
@@ -175,8 +176,10 @@ export default function IssueSolver() {
       setSolution(data.solution)
       // Don't auto-redirect - let user review first
       
-      // Invalidate subscription query to refresh credit balance
-      // This will be handled automatically by React Query refetch
+      // Invalidate queries to refresh credit balance and usage stats
+      queryClient.invalidateQueries({ queryKey: ['subscription-details'] })
+      queryClient.invalidateQueries({ queryKey: ['usage-stats'] })
+      queryClient.invalidateQueries({ queryKey: ['ai-models'] })
     },
     onError: (error: any) => {
       const errorData = error.response?.data

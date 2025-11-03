@@ -103,7 +103,33 @@ export default function Contribute() {
     },
     onError: (error: any) => {
       setStep('preview')
-      toast.error(error.response?.data?.error || 'Failed to import issue')
+      const errorData = error.response?.data
+      
+      // Handle repository authorization required
+      if (errorData?.requiresAuthorization) {
+        toast.error(errorData.message || 'Repository access required', { duration: 5000 })
+        
+        // Redirect to authorization if URL is provided
+        if (errorData.authorizationUrl) {
+          setTimeout(() => {
+            window.location.href = errorData.authorizationUrl
+          }, 2000)
+        } else {
+          // Fallback: redirect to repositories page
+          setTimeout(() => {
+            const token = localStorage.getItem('auth_token')
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+            if (token) {
+              window.location.href = `${apiUrl}/api/auth/github/repos?token=${token}`
+            } else {
+              navigate('/repositories')
+            }
+          }, 2000)
+        }
+        return
+      }
+      
+      toast.error(errorData?.error || errorData?.message || 'Failed to import issue')
     }
   })
 
