@@ -78,7 +78,7 @@ export default function Pricing() {
         id: 'PRO',
         name: 'Pro Tier',
         description: 'For developers who need access to premium AI models',
-        price: 20,
+        price: 1, // Temporarily set to $1 for testing with live Razorpay
         currency: 'USD',
         interval: 'monthly',
         features: [
