@@ -20,7 +20,7 @@ export default function AuthCallback() {
         // Verify the token and get user data
         await checkAuth()
         
-        // Check if user has access (test user or access code)
+        // Check if user has access and determine routing
         try {
           console.log('🔍 Checking access status after authentication...')
           const response = await waitlistAPI.checkStatus()
@@ -29,16 +29,28 @@ export default function AuthCallback() {
           if (response.data.hasAccess) {
             // User has access (test user or verified access code)
             console.log('✅ User has access, redirecting to dashboard')
-            navigate('/dashboard')
+            navigate('/dashboard', { replace: true })
           } else {
-            // User needs to go through waitlist
-            console.log('⚠️ User needs waitlist, redirecting to waitlist')
-            navigate('/waitlist')
+            // Intelligent routing based on waitlist status
+            const waitlistStatus = response.data.waitlistStatus || 'not_submitted'
+            const hasWaitlistEntry = response.data.hasWaitlistEntry || false
+            
+            console.log(`📋 Waitlist status: ${waitlistStatus}, hasEntry: ${hasWaitlistEntry}`)
+            
+            if (hasWaitlistEntry) {
+              // User has submitted waitlist - show status page
+              console.log('📄 User has waitlist entry, redirecting to status page')
+              navigate('/application-status', { replace: true })
+            } else {
+              // User hasn't submitted waitlist - redirect to waitlist form
+              console.log('📝 User has not submitted waitlist, redirecting to waitlist form')
+              navigate('/waitlist', { replace: true })
+            }
           }
         } catch (error) {
           console.error('❌ Error checking access status:', error)
-          // On error, redirect to waitlist
-          navigate('/waitlist')
+          // On error, redirect to application status page (will show appropriate message)
+          navigate('/application-status', { replace: true })
         }
       } else {
         // No token found, redirect to home
