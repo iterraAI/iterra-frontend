@@ -219,7 +219,7 @@ export default function ProfileSettings() {
                           </span>
                         </div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                          {subscriptionData?.subscription?.plan === 'PRO' ? '$20/month' : 
+                          {subscriptionData?.subscription?.plan === 'PRO' ? '$1/month' : 
                            subscriptionData?.subscription?.plan === 'PRO_PLUS' ? '$50/month' :
                            subscriptionData?.subscription?.plan === 'TEAMS' ? '$150/month' :
                            subscriptionData?.subscription?.plan === 'ENTERPRISE' ? 'Custom pricing' :
@@ -516,7 +516,7 @@ export default function ProfileSettings() {
                       <div className="text-right">
                         <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Price</p>
                         <p className="text-base font-medium text-gray-900 dark:text-gray-100">
-                          ${subscriptionData?.subscription?.plan === 'PRO' ? '20' : 
+                          ${subscriptionData?.subscription?.plan === 'PRO' ? '1' : 
                            subscriptionData?.subscription?.plan === 'PRO_PLUS' ? '50' :
                            subscriptionData?.subscription?.plan === 'TEAMS' ? '150' :
                            subscriptionData?.subscription?.plan === 'ENTERPRISE' ? 'Custom' : '0'}/month
