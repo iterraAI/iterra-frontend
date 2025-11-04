@@ -11,7 +11,8 @@ import {
   ArrowRight,
   Github,
   Code,
-  Rocket
+  Rocket,
+  AlertCircle
 } from 'lucide-react'
 // import logo from '../assets/logo_new.png'
 import darkLogo from '../assets/logo_dark.png'
@@ -22,12 +23,67 @@ export default function LandingPage() {
   const { user, isLoading } = useAuthStore()
   const navigate = useNavigate()
   const [url, setUrl] = useState('')
+  const [statusBanner, setStatusBanner] = useState<{
+    show: boolean
+    status: string
+    message: string
+  } | null>(null)
 
+  // Check waitlist status if user is logged in (but don't redirect)
   useEffect(() => {
-    if (user && !isLoading) {
-      navigate('/dashboard')
+    const checkStatus = async () => {
+      if (!user || isLoading) {
+        setStatusBanner(null)
+        return
+      }
+
+      try {
+        const { waitlistAPI } = await import('../utils/api')
+        const response = await waitlistAPI.checkStatus()
+        const data = response.data
+
+        // Only show banner if user doesn't have access
+        if (!data.hasAccess) {
+          const status = data.waitlistStatus || 'not_submitted'
+          const hasEntry = data.hasWaitlistEntry || false
+
+          if (hasEntry) {
+            // User has submitted waitlist - show status
+            const statusMessages: Record<string, { message: string; color: string }> = {
+              'pending_review': { message: 'Your application is under review', color: 'yellow' },
+              'pending_sharing': { message: 'Your application is pending', color: 'blue' },
+              'approved': { message: 'Your application has been approved! Check your email for access code.', color: 'green' },
+              'rejected': { message: 'Your application was not approved', color: 'red' },
+              'expired': { message: 'Your access code has expired', color: 'orange' }
+            }
+
+            const statusInfo = statusMessages[status] || { message: 'Your application status is being checked', color: 'gray' }
+            setStatusBanner({
+              show: true,
+              status,
+              message: statusInfo.message
+            })
+          } else {
+            // User hasn't submitted waitlist
+            setStatusBanner({
+              show: true,
+              status: 'not_submitted',
+              message: 'Join the waitlist to get early access'
+            })
+          }
+        } else {
+          // User has access - no banner needed
+          setStatusBanner(null)
+        }
+      } catch (error) {
+        console.error('Error checking status for banner:', error)
+        // Don't show banner on error
+        setStatusBanner(null)
+      }
     }
-  }, [user, isLoading, navigate])
+
+    checkStatus()
+  }, [user, isLoading])
 
   const handleImport = (e: React.FormEvent) => {
     e.preventDefault()
@@ -75,8 +131,13 @@ export default function LandingPage() {
 
             {/* CTA Buttons */}
             <div className="flex items-center space-x-3">
+              {user && !isLoading && (
+                <Link to="/application-status" className="btn btn-secondary text-sm">
+                  Check Status
+                </Link>
+              )}
               <Link to="/auth" className="btn btn-primary">
-                Get Started
+                {user ? 'Dashboard' : 'Get Started'}
                 <ArrowRight size={18} />
               </Link>
               <ThemeSwitcher />
@@ -84,6 +145,52 @@ export default function LandingPage() {
           </div>
         </div>
       </nav>
+
+      {/* Status Banner (for logged-in users without access) */}
+      {statusBanner && statusBanner.show && (
+        <div className={(() => {
+          const status = statusBanner.status
+          if (status === 'approved') return 'bg-green-50 dark:bg-green-900/20 border-b border-green-200 dark:border-green-800'
+          if (status === 'pending_review') return 'bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800'
+          if (status === 'not_submitted') return 'bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800'
+          return 'bg-gray-50 dark:bg-gray-900/20 border-b border-gray-200 dark:border-gray-800'
+        })()}>
+          <div className="container-custom py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <AlertCircle className={(() => {
+                  const status = statusBanner.status
+                  if (status === 'approved') return 'text-green-600 dark:text-green-400'
+                  if (status === 'pending_review') return 'text-yellow-600 dark:text-yellow-400'
+                  if (status === 'not_submitted') return 'text-blue-600 dark:text-blue-400'
+                  return 'text-gray-600 dark:text-gray-400'
+                })()} size={20} />
+                <p className={(() => {
+                  const status = statusBanner.status
+                  if (status === 'approved') return 'text-sm font-medium text-green-800 dark:text-green-200'
+                  if (status === 'pending_review') return 'text-sm font-medium text-yellow-800 dark:text-yellow-200'
+                  if (status === 'not_submitted') return 'text-sm font-medium text-blue-800 dark:text-blue-200'
+                  return 'text-sm font-medium text-gray-800 dark:text-gray-200'
+                })()}>
+                  {statusBanner.message}
+                </p>
+              </div>
+              <Link 
+                to="/application-status" 
+                className={(() => {
+                  const status = statusBanner.status
+                  if (status === 'approved') return 'text-sm font-semibold text-green-700 dark:text-green-300 hover:underline'
+                  if (status === 'pending_review') return 'text-sm font-semibold text-yellow-700 dark:text-yellow-300 hover:underline'
+                  if (status === 'not_submitted') return 'text-sm font-semibold text-blue-700 dark:text-blue-300 hover:underline'
+                  return 'text-sm font-semibold text-gray-700 dark:text-gray-300 hover:underline'
+                })()}
+              >
+                View Details →
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="relative pt-20 pb-32 overflow-hidden">

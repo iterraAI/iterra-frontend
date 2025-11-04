@@ -9,6 +9,7 @@ import Waitlist from './pages/Waitlist'
 import SharePage from './pages/SharePage'
 import ThankYou from './pages/ThankYou'
 import VerifyCode from './pages/VerifyCode'
+import ApplicationStatus from './pages/ApplicationStatus'
 import Auth from './pages/Auth'
 import AuthCallback from './pages/AuthCallback'
 import Dashboard from './pages/Dashboard'
@@ -39,6 +40,7 @@ function App() {
         <Route path="/share" element={<SharePage />} />
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/verify-code" element={<VerifyCode />} />
+        <Route path="/application-status" element={<ApplicationStatus />} />
         <Route path="/pricing" element={<Pricing />} />
         
         {/* Auth routes - NO access guard (so users can log in first) */}
@@ -46,7 +48,8 @@ function App() {
         <Route path="/auth/callback" element={<AuthCallback />} />
         
         {/* Landing page - wrapped with access guard (will redirect to waitlist if no access) */}
-        <Route path="/" element={<AccessCodeGuard><LandingPage /></AccessCodeGuard>} />
+        {/* <Route path="/" element={<AccessCodeGuard><LandingPage /></AccessCodeGuard>} /> */}
+        <Route path="/" element={<LandingPage />} />
         
         {/* Admin routes - require admin access */}
         <Route path="/admin" element={<AccessCodeGuard><AdminGuard><Layout><AdminDashboard /></Layout></AdminGuard></AccessCodeGuard>} />

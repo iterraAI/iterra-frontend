@@ -30,22 +30,34 @@ export default function AccessCodeGuard({ children }: AccessCodeGuardProps) {
           console.log(`✅ [AccessCodeGuard] Access granted (source: ${response.data.source || 'unknown'})`)
           setHasAccess(true)
         } else {
-          console.log('[AccessCodeGuard] No access, redirecting to /waitlist')
+          console.log('[AccessCodeGuard] No access, determining redirect destination')
           console.log('[AccessCodeGuard] Access check details:', {
             hasAccess: response.data.hasAccess,
             email: response.data.email,
-            source: response.data.source
+            source: response.data.source,
+            waitlistStatus: response.data.waitlistStatus,
+            hasWaitlistEntry: response.data.hasWaitlistEntry
           })
-          navigate('/waitlist', { replace: true })
+          
+          // Intelligent routing: if user has waitlist entry, show status page
+          // Otherwise, redirect to waitlist form
+          const hasEntry = response.data.hasWaitlistEntry || false
+          if (hasEntry) {
+            console.log('[AccessCodeGuard] User has waitlist entry, redirecting to /application-status')
+            navigate('/application-status', { replace: true })
+          } else {
+            console.log('[AccessCodeGuard] User has no waitlist entry, redirecting to /waitlist')
+            navigate('/waitlist', { replace: true })
+          }
         }
       } catch (error: any) {
         console.error('[AccessCodeGuard] Error checking access status:', error)
         // If it's a network error or 401, user might not be authenticated yet
-        // But we still redirect to waitlist to be safe
+        // Redirect to application status (will show appropriate message)
         if (error.response?.status === 401) {
-          console.log('[AccessCodeGuard] User not authenticated, redirecting to waitlist')
+          console.log('[AccessCodeGuard] User not authenticated, redirecting to application status')
         }
-        navigate('/waitlist', { replace: true })
+        navigate('/application-status', { replace: true })
       } finally {
         setIsChecking(false)
       }
