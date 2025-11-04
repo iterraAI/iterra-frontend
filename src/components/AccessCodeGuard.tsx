@@ -15,28 +15,48 @@ export default function AccessCodeGuard({ children }: AccessCodeGuardProps) {
 
   useEffect(() => {
     const checkAccess = async () => {
+      // Wait for auth to finish loading
       if (authLoading) {
         console.log('[AccessCodeGuard] Waiting for authLoading, user:', user)
         return
       }
+      
       try {
         console.log('[AccessCodeGuard] Calling /api/waitlist/status. user:', user)
         const response = await waitlistAPI.checkStatus()
         console.log('[AccessCodeGuard] API response:', response.data)
+        
         if (response.data.hasAccess) {
+          console.log(`✅ [AccessCodeGuard] Access granted (source: ${response.data.source || 'unknown'})`)
           setHasAccess(true)
         } else {
           console.log('[AccessCodeGuard] No access, redirecting to /waitlist')
+          console.log('[AccessCodeGuard] Access check details:', {
+            hasAccess: response.data.hasAccess,
+            email: response.data.email,
+            source: response.data.source
+          })
           navigate('/waitlist', { replace: true })
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('[AccessCodeGuard] Error checking access status:', error)
+        // If it's a network error or 401, user might not be authenticated yet
+        // But we still redirect to waitlist to be safe
+        if (error.response?.status === 401) {
+          console.log('[AccessCodeGuard] User not authenticated, redirecting to waitlist')
+        }
         navigate('/waitlist', { replace: true })
       } finally {
         setIsChecking(false)
       }
     }
-    checkAccess()
+    
+    // Small delay to ensure auth state is fully loaded
+    const timeoutId = setTimeout(() => {
+      checkAccess()
+    }, 100)
+    
+    return () => clearTimeout(timeoutId)
   }, [navigate, authLoading, user])
 
   if (isChecking) {
