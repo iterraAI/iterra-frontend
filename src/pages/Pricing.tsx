@@ -78,7 +78,7 @@ export default function Pricing() {
         id: 'PRO',
         name: 'Pro Tier',
         description: 'For developers who need access to premium AI models',
-        price: 1, // Temporarily set to $1 for testing with live Razorpay
+        price: 20,
         currency: 'USD',
         interval: 'monthly',
         features: [
@@ -187,7 +187,7 @@ export default function Pricing() {
       toast.error('Please select a paid plan to upgrade')
       return
     }
-    
+
     // If user is not logged in, redirect to auth
     if (!user) {
       navigate('/auth')
@@ -200,7 +200,7 @@ export default function Pricing() {
       toast.error(`You are already on the ${selectedPlan} plan`)
       return
     }
-    
+
     setShowPaymentModal(true)
   }
 
@@ -276,125 +276,123 @@ export default function Pricing() {
             </p>
           </div>
 
-        {/* Pricing Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-          {pricingData?.plans?.map((plan: Plan) => {
-            const isCurrentPlan = user && userSubscription?.subscription?.plan === plan.id
-            const isSelected = selectedPlan === plan.id
-            const isPopular = plan.id === 'PRO'
-            
-            return (
-              <div
-                key={plan.id}
-                className={`relative bg-white dark:bg-[var(--bg-secondary)] rounded-lg border transition-all ${
-                  isPopular && !isCurrentPlan
-                    ? 'border-green-500 dark:border-green-600 shadow-lg'
-                    : isCurrentPlan
-                    ? 'border-green-500 dark:border-green-600'
-                    : isSelected
-                    ? 'border-gray-400 dark:border-gray-500'
-                    : 'border-gray-200 dark:border-gray-700'
-                }`}
-              >
-                {isPopular && !isCurrentPlan && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium">
-                      Popular
-                    </span>
-                  </div>
-                )}
+          {/* Pricing Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+            {pricingData?.plans?.map((plan: Plan) => {
+              const isCurrentPlan = user && userSubscription?.subscription?.plan === plan.id
+              const isSelected = selectedPlan === plan.id
+              const isPopular = plan.id === 'PRO'
 
-                {/* Plan Header */}
-                <div className="p-6">
-                  <div className="mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                      {plan.name}
-                    </h3>
-                    {plan.id !== 'FREE' && (
-                      <div className="mb-4">
-                        <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                          ${plan.price}
-                        </span>
-                        <span className="text-gray-600 dark:text-gray-400 text-sm ml-1">/mo</span>
-                      </div>
-                    )}
-                    {plan.id === 'FREE' && (
-                      <div className="mb-4">
-                        <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                          Free
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Credits - Primary Info */}
-                  <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-                    <div className="text-2xl font-bold text-green-500">
-                      {plan.monthlyCredits === 0 ? 'Custom' : plan.monthlyCredits === -1 ? '∞' : plan.monthlyCredits.toLocaleString()}
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      credits/mo
-                    </div>
-                  </div>
-
-                  {/* Key Features - Minimal List */}
-                  <div className="space-y-2 mb-6">
-                    {plan.features.slice(0, 4).map((feature: string, index: number) => (
-                      <div key={index} className="flex items-start space-x-2">
-                        <Check className="text-green-500 mt-0.5 flex-shrink-0" size={14} />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">
-                          {feature.replace(' per month', '').replace(' credits', '')}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Action Button */}
-                  <button
-                    onClick={() => handleSelectPlan(plan.id)}
-                    disabled={plan.id === 'FREE' || !!isCurrentPlan}
-                    className={`w-full py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
-                      isCurrentPlan
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 cursor-not-allowed'
+              return (
+                <div
+                  key={plan.id}
+                  className={`relative bg-white dark:bg-[var(--bg-secondary)] rounded-lg border transition-all ${isPopular && !isCurrentPlan
+                      ? 'border-green-500 dark:border-green-600 shadow-lg'
+                      : isCurrentPlan
+                        ? 'border-green-500 dark:border-green-600'
                         : isSelected
-                        ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
-                        : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700'
+                          ? 'border-gray-400 dark:border-gray-500'
+                          : 'border-gray-200 dark:border-gray-700'
                     }`}
-                  >
-                    {isCurrentPlan ? 'Current Plan' : 
-                     isSelected ? 'Selected' : 
-                     plan.id === 'FREE' ? 'Get Started' : 'Select'}
-                  </button>
-                </div>
-              </div>
-            )
-          })}
-        </div>
+                >
+                  {isPopular && !isCurrentPlan && (
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                      <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                        Popular
+                      </span>
+                    </div>
+                  )}
 
-        {/* Upgrade Button */}
-        <div className="text-center mt-12">
-          <button
-            onClick={handleUpgrade}
-            disabled={selectedPlan === 'FREE' || (user && userSubscription?.subscription?.plan === selectedPlan) || false}
-            className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-8 py-3 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 mx-auto"
-          >
-            <span>
-              {user ? 
-                (userSubscription?.subscription?.plan === selectedPlan ? 
-                  `Current Plan` : 
-                  userSubscription?.subscription?.plan === 'FREE' ? 
-                  'Upgrade Now' : 
-                  'Change Plan'
-                ) : 
-                'Sign In to Upgrade'
-              }
-            </span>
-            <ArrowRight size={18} />
-          </button>
-          <p className="text-gray-500 dark:text-gray-400 mt-3 text-sm">
-            {user ? 'Secure payment • Cancel anytime' : 'Sign in to upgrade your plan'}
-          </p>
-        </div>
+                  {/* Plan Header */}
+                  <div className="p-6">
+                    <div className="mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                        {plan.name}
+                      </h3>
+                      {plan.id !== 'FREE' && (
+                        <div className="mb-4">
+                          <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                            ${plan.price}
+                          </span>
+                          <span className="text-gray-600 dark:text-gray-400 text-sm ml-1">/mo</span>
+                        </div>
+                      )}
+                      {plan.id === 'FREE' && (
+                        <div className="mb-4">
+                          <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                            Free
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Credits - Primary Info */}
+                    <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+                      <div className="text-2xl font-bold text-green-500">
+                        {plan.monthlyCredits === 0 ? 'Custom' : plan.monthlyCredits === -1 ? '∞' : plan.monthlyCredits.toLocaleString()}
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        credits/mo
+                      </div>
+                    </div>
+
+                    {/* Key Features - Minimal List */}
+                    <div className="space-y-2 mb-6">
+                      {plan.features.slice(0, 4).map((feature: string, index: number) => (
+                        <div key={index} className="flex items-start space-x-2">
+                          <Check className="text-green-500 mt-0.5 flex-shrink-0" size={14} />
+                          <span className="text-sm text-gray-700 dark:text-gray-300">
+                            {feature.replace(' per month', '').replace(' credits', '')}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Action Button */}
+                    <button
+                      onClick={() => handleSelectPlan(plan.id)}
+                      disabled={plan.id === 'FREE' || !!isCurrentPlan}
+                      className={`w-full py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${isCurrentPlan
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 cursor-not-allowed'
+                          : isSelected
+                            ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        }`}
+                    >
+                      {isCurrentPlan ? 'Current Plan' :
+                        isSelected ? 'Selected' :
+                          plan.id === 'FREE' ? 'Get Started' : 'Select'}
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Upgrade Button */}
+          <div className="text-center mt-12">
+            <button
+              onClick={handleUpgrade}
+              disabled={selectedPlan === 'FREE' || (user && userSubscription?.subscription?.plan === selectedPlan) || false}
+              className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-8 py-3 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 mx-auto"
+            >
+              <span>
+                {user ?
+                  (userSubscription?.subscription?.plan === selectedPlan ?
+                    `Current Plan` :
+                    userSubscription?.subscription?.plan === 'FREE' ?
+                      'Upgrade Now' :
+                      'Change Plan'
+                  ) :
+                  'Sign In to Upgrade'
+                }
+              </span>
+              <ArrowRight size={18} />
+            </button>
+            <p className="text-gray-500 dark:text-gray-400 mt-3 text-sm">
+              {user ? 'Secure payment • Cancel anytime' : 'Sign in to upgrade your plan'}
+            </p>
+          </div>
         </div>
       </section>
 
@@ -423,8 +421,8 @@ export default function Pricing() {
           isOpen={showPaymentModal}
           onClose={() => setShowPaymentModal(false)}
           planId={selectedPlan}
-                  planName={pricingData.plans.find((p: Plan) => p.id === selectedPlan)?.name || 'Pro Plan'}
-                  amount={pricingData.plans.find((p: Plan) => p.id === selectedPlan)?.price || 15}
+          planName={pricingData.plans.find((p: Plan) => p.id === selectedPlan)?.name || 'Pro Plan'}
+          amount={pricingData.plans.find((p: Plan) => p.id === selectedPlan)?.price || 15}
         />
       )}
     </div>

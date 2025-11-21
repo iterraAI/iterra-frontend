@@ -31,6 +31,8 @@ export default {
         'gradient': 'gradient 8s linear infinite',
         'float': 'float 6s ease-in-out infinite',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        spotlight: "spotlight 2s ease .75s 1 forwards",
+
       },
       keyframes: {
         gradient: {
@@ -43,6 +45,17 @@ export default {
             'background-position': 'right center'
           },
         },
+        spotlight: {
+          "0%": {
+            opacity: 0,
+            transform: "translate(-72%, -62%) scale(0.5)",
+          },
+          "100%": {
+            opacity: 1,
+            transform: "translate(-50%,-40%) scale(1)",
+          },
+        },
+
       },
       boxShadow: {
         'glow': '0 0 20px rgba(14, 165, 233, 0.3)',

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
-import { 
-  User, 
-  BarChart3, 
-  CreditCard, 
-  Settings, 
+import {
+  User,
+  BarChart3,
+  CreditCard,
+  Settings,
   ArrowRight,
   CheckCircle
 } from 'lucide-react'
@@ -88,7 +88,7 @@ export default function ProfileSettings() {
         if (usageFilterDays) params.append('days', usageFilterDays.toString())
         params.append('page', usagePage.toString())
         params.append('limit', '100')
-        
+
         const res = await authenticatedGet(`/api/payments/usage/stats?${params.toString()}`)
         return res.data
       } catch (error) {
@@ -133,7 +133,7 @@ export default function ProfileSettings() {
 
   return (
     <div className="min-h-screen ">
-    {/* <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-green-50/30 dark:bg-[var(--bg-secondary)]"> */}
+      {/* <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-green-50/30 dark:bg-[var(--bg-secondary)]"> */}
       {/* Navigation */}
       <nav className="bg-transparent backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <div className="pl-4 pr-4">
@@ -185,11 +185,10 @@ export default function ProfileSettings() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors ${
-                        activeTab === tab.id
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors ${activeTab === tab.id
                           ? 'text-green-600 dark:text-green-400 font-medium'
                           : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-                      }`}
+                        }`}
                     >
                       <Icon size={16} />
                       <span>{tab.name}</span>
@@ -219,11 +218,11 @@ export default function ProfileSettings() {
                           </span>
                         </div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                          {subscriptionData?.subscription?.plan === 'PRO' ? '$1/month' : 
-                           subscriptionData?.subscription?.plan === 'PRO_PLUS' ? '$50/month' :
-                           subscriptionData?.subscription?.plan === 'TEAMS' ? '$150/month' :
-                           subscriptionData?.subscription?.plan === 'ENTERPRISE' ? 'Custom pricing' :
-                           'Free'}
+                          {subscriptionData?.subscription?.plan === 'PRO' ? '$20/month' :
+                            subscriptionData?.subscription?.plan === 'PRO_PLUS' ? '$50/month' :
+                              subscriptionData?.subscription?.plan === 'TEAMS' ? '$150/month' :
+                                subscriptionData?.subscription?.plan === 'ENTERPRISE' ? 'Custom pricing' :
+                                  'Free'}
                         </p>
                       </div>
                       {subscriptionData?.subscription?.plan !== 'ENTERPRISE' && (
@@ -247,10 +246,10 @@ export default function ProfileSettings() {
                     </div>
                     {subscriptionData?.subscription?.credits?.allocated > 0 && (
                       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
-                        <div 
+                        <div
                           className="bg-green-500 h-1 rounded-full transition-all"
-                          style={{ 
-                            width: `${100 - ((subscriptionData?.subscription?.credits?.balance || 0) / (subscriptionData?.subscription?.credits?.allocated || 1) * 100)}%` 
+                          style={{
+                            width: `${100 - ((subscriptionData?.subscription?.credits?.balance || 0) / (subscriptionData?.subscription?.credits?.allocated || 1) * 100)}%`
                           }}
                         ></div>
                       </div>
@@ -302,10 +301,10 @@ export default function ProfileSettings() {
                     </div>
                     {subscriptionData?.subscription?.credits?.allocated > 0 && (
                       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
-                        <div 
+                        <div
                           className="bg-green-500 h-1 rounded-full transition-all"
-                          style={{ 
-                            width: `${Math.min(((subscriptionData?.subscription?.credits?.used || 0) / (subscriptionData?.subscription?.credits?.allocated || 1)) * 100, 100)}%` 
+                          style={{
+                            width: `${Math.min(((subscriptionData?.subscription?.credits?.used || 0) / (subscriptionData?.subscription?.credits?.allocated || 1)) * 100, 100)}%`
                           }}
                         ></div>
                       </div>
@@ -332,12 +331,12 @@ export default function ProfileSettings() {
                   <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
                     <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Reset Date</p>
                     <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                      {subscriptionData?.subscription?.currentPeriodEnd ? 
-                        new Date(subscriptionData.subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
-                          month: 'long', 
+                      {subscriptionData?.subscription?.currentPeriodEnd ?
+                        new Date(subscriptionData.subscription.currentPeriodEnd).toLocaleDateString('en-US', {
+                          month: 'long',
                           day: 'numeric',
                           year: 'numeric'
-                        }) : 
+                        }) :
                         'N/A'}
                     </p>
                   </div>
@@ -352,11 +351,10 @@ export default function ProfileSettings() {
                             setUsageFilterDays(1)
                             setUsagePage(1)
                           }}
-                          className={`px-3 py-1 text-xs rounded transition-colors ${
-                            usageFilterDays === 1
+                          className={`px-3 py-1 text-xs rounded transition-colors ${usageFilterDays === 1
                               ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-medium'
                               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-                          }`}
+                            }`}
                         >
                           1d
                         </button>
@@ -365,11 +363,10 @@ export default function ProfileSettings() {
                             setUsageFilterDays(7)
                             setUsagePage(1)
                           }}
-                          className={`px-3 py-1 text-xs rounded transition-colors ${
-                            usageFilterDays === 7
+                          className={`px-3 py-1 text-xs rounded transition-colors ${usageFilterDays === 7
                               ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-medium'
                               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-                          }`}
+                            }`}
                         >
                           7d
                         </button>
@@ -378,11 +375,10 @@ export default function ProfileSettings() {
                             setUsageFilterDays(30)
                             setUsagePage(1)
                           }}
-                          className={`px-3 py-1 text-xs rounded transition-colors ${
-                            usageFilterDays === 30
+                          className={`px-3 py-1 text-xs rounded transition-colors ${usageFilterDays === 30
                               ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-medium'
                               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-                          }`}
+                            }`}
                         >
                           30d
                         </button>
@@ -411,7 +407,7 @@ export default function ProfileSettings() {
                           </thead>
                           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                             {usageStats.usageHistory.map((job) => (
-                              <tr 
+                              <tr
                                 key={job.id}
                                 className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors"
                               >
@@ -420,10 +416,10 @@ export default function ProfileSettings() {
                                     const date = new Date(job.date)
                                     const month = date.toLocaleDateString('en-US', { month: 'short' })
                                     const day = date.getDate()
-                                    const time = date.toLocaleTimeString('en-US', { 
-                                      hour: '2-digit', 
+                                    const time = date.toLocaleTimeString('en-US', {
+                                      hour: '2-digit',
                                       minute: '2-digit',
-                                      hour12: true 
+                                      hour12: true
                                     })
                                     return `${month} ${day}, ${time}`
                                   })()}
@@ -516,20 +512,20 @@ export default function ProfileSettings() {
                       <div className="text-right">
                         <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Price</p>
                         <p className="text-base font-medium text-gray-900 dark:text-gray-100">
-                          ${subscriptionData?.subscription?.plan === 'PRO' ? '1' : 
-                           subscriptionData?.subscription?.plan === 'PRO_PLUS' ? '50' :
-                           subscriptionData?.subscription?.plan === 'TEAMS' ? '150' :
-                           subscriptionData?.subscription?.plan === 'ENTERPRISE' ? 'Custom' : '0'}/month
+                          ${subscriptionData?.subscription?.plan === 'PRO' ? '20' :
+                            subscriptionData?.subscription?.plan === 'PRO_PLUS' ? '50' :
+                              subscriptionData?.subscription?.plan === 'TEAMS' ? '150' :
+                                subscriptionData?.subscription?.plan === 'ENTERPRISE' ? 'Custom' : '0'}/month
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
                       <div>
                         <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Next billing date</p>
                         <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                          {subscriptionData?.subscription?.currentPeriodEnd ? 
-                            new Date(subscriptionData.subscription.currentPeriodEnd).toLocaleDateString() : 
+                          {subscriptionData?.subscription?.currentPeriodEnd ?
+                            new Date(subscriptionData.subscription.currentPeriodEnd).toLocaleDateString() :
                             'N/A'
                           }
                         </p>
